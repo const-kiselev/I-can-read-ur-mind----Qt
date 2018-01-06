@@ -27,15 +27,16 @@ SOURCES += \
     main.cpp \
     main-window.cpp \
     additional_lib.cpp \
-    BCIs/eye-tracker/eye-tracker.cpp
+    BCIs/eye-tracker/eye-tracker.cpp \
+    widgets/menu/menu.cpp
 
 HEADERS += \
     main-window.h \
     additional_header.h \
-    BCIs/eye-tracker/eye-tracker.h
+    BCIs/eye-tracker/eye-tracker.h \
+    widgets/menu/menu.h
 
-FORMS += \
-    main-window.ui
+FORMS +=
 
 #LIBS += /usr/local/lib/tobii_research
 macx:LIBS += -ltobii_research -L/usr/local/lib/tobii_research

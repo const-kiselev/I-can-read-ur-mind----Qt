@@ -2,10 +2,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-
-namespace Ui {
-class MainWindow;
-}
+#include <QFrame>
+#include <QStackedWidget>
+#include <widgets/menu/menu.h>
 
 class MainWindow : public QMainWindow
 {
@@ -16,7 +15,7 @@ public:
     ~MainWindow();
 
 private:
-    Ui::MainWindow *ui;
+    QStackedWidget *stackedWidget;
 };
 
 #endif // MAINWINDOW_H
