@@ -1,6 +1,8 @@
 #ifndef EYETRACKE_H
 #define EYETRACKE_H
 
+#define NO_ET true
+
 
 #include <QApplication>
 #include <tobii_research/tobii_research.h>
@@ -8,17 +10,20 @@
 #include <tobii_research/tobii_research_eyetracker.h>
 #include <tobii_research/tobii_research_streams.h>
 #include <additional_header.h>
-using namespace std;
+#include <QThread>
 
-class eyeTracker: public QObject
+
+class EyeTracker: public QObject
 {
 Q_OBJECT
 public:
-    eyeTracker();
-    ~eyeTracker();
+    EyeTracker();
+    ~EyeTracker();
     //function<int(string)> getHandler();
+signals:
+    void uiHandler(const QString&);
 public slots:
-    int handler(string);
+    int signalsHandler(const QString&);
 private:
     int init();
     int calibrate();
@@ -27,9 +32,11 @@ private:
 
 
     TobiiResearchEyeTracker* eye_tracker;
+    TobiiResearchStatus status;
     bool calibrate_done;
     bool calibrate_need;
     bool tracking_active;
+
 };
 
 #endif // EYETRACKE_H

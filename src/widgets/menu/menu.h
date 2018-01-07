@@ -2,7 +2,7 @@
 #define Menu_H
 
 #include <QWidget>
-#include <QtWidgets>
+#include <additional_header.h>
 
 class Menu : public QWidget
 {
@@ -11,8 +11,10 @@ class Menu : public QWidget
 public:
     explicit Menu(QWidget *parent);
     ~Menu();
-
+public slots:
+    int signalsHandler(const QString&);
 private:
+    QWidget *pMainWin;
 };
 
 #endif // Menu_H

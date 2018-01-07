@@ -28,13 +28,17 @@ SOURCES += \
     main-window.cpp \
     additional_lib.cpp \
     BCIs/eye-tracker/eye-tracker.cpp \
-    widgets/menu/menu.cpp
+    widgets/menu/menu.cpp \
+    BCIs/bci.cpp \
+    widgets/eyeTracker/calibration/calibration.cpp
 
 HEADERS += \
     main-window.h \
     additional_header.h \
     BCIs/eye-tracker/eye-tracker.h \
-    widgets/menu/menu.h
+    widgets/menu/menu.h \
+    BCIs/bci.h \
+    widgets/eyeTracker/calibration/calibration.h
 
 FORMS +=
 

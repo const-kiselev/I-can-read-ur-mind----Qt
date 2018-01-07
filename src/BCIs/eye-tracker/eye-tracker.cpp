@@ -1,46 +1,52 @@
 #include "eye-tracker.h"
 
-eyeTracker::eyeTracker()
+EyeTracker::EyeTracker() : QObject(new QObject)
 {
     calibrate_done = false;
     calibrate_need = true;
     eye_tracker = nullptr;
 }
 
-eyeTracker::~eyeTracker()
+EyeTracker::~EyeTracker()
 {
     //if(eyeTracker) // Резлизовать!!!
 
 }
 
-int eyeTracker::handler(string inStr)
+int EyeTracker::signalsHandler(const QString &inSignal)
 {
-    if(inStr == "init"){
-        init();
+    if(inSignal == EYE_TRACKER_INIT){
+        if(init())
+            uiHandler(EYE_TRACKER_FAILED_INIT);
+        else
+            uiHandler(EYE_TRACKER_SUCESSFULL_INIT);
     }
-    else if(inStr == "calibrate"){
+    else if(inSignal == "calibrate"){
         calibrate();
     }
-    else if(inStr == "subscribe"){
+    else if(inSignal == "subscribe"){
 
     }
-    else if(inStr == "unsubscribe"){
+    else if(inSignal == "unsubscribe"){
 
     }
     return 0;
 }
 
-int eyeTracker::init()
+int EyeTracker::init()
 {
+    if (NO_ET) {
+        return 0;
+    }
     // Задачи для реализации:
     // Необходимо дописать и сделать:
     //	- после поиска всех устройств предлагать пользователю выбрать, какое использовать
     //  - после найденных устройст
     TobiiResearchEyeTrackers *findedTrackers;
     TobiiResearchStatus response = tobii_research_find_all_eyetrackers(&findedTrackers);
-    cout << response << endl;
+    qDebug() << (int)response << "\n";
     if (response) { // != TOBII_RESEARCH_STATUS_OK
-        cout << endl << "Error in tobii_research_find_all_eyetrackers: " << response << endl;
+        qDebug() << "\n" << "Error in tobii_research_find_all_eyetrackers: " << response << "\n";
         return 1;
     }
     //tobii_research_get_serial_number((findedTrackers->eyetrackers[0]), &serial_number);
@@ -49,23 +55,34 @@ int eyeTracker::init()
     return 0;
 }
 
-int eyeTracker::calibrate()
+int EyeTracker::calibrate()
 {
+    QJsonObject jsonPoint;
+    jsonPoint["x"]=0.0f;
+    jsonPoint["y"]=0.0f;
+    jsonPoint["time"] = 800;
     // TODO: gроверить все cout, чтобы корректно отображались
     // TODO: реализовать тестирование класса без айТрекера
-//    if (NO_ET) {
+    if (NO_ET) {
+        uiHandler(EYE_TRACKER_SUCESSFULL_CALIBRATION_START);
+        #define NUM_OF_POINTS  9U
+        TobiiResearchNormalizedPoint2D points_to_calibrate[NUM_OF_POINTS] = \
+        { {0.5f, 0.5f}, { 0.6f, 0.6f }, { 0.6f, 0.4f }, { 0.4f, 0.6f }, { 0.4f, 0.4f }, { 0.05f, 0.05f }, { 0.05f, 0.95f }, { 0.95f, 0.05f }, { 0.95f, 0.95f }};
+        size_t i = 0;
+        for (; i < NUM_OF_POINTS; i++) {
+            TobiiResearchNormalizedPoint2D* point = &points_to_calibrate[i];
+            jsonPoint["x"]=point->x;
+            jsonPoint["y"]=point->y;
+            uiHandler(EYE_TRACKER_POINT_TO_CALIBRATE+QJsonDocument(jsonPoint).toJson(QJsonDocument::Compact));
+        }
+        return 0;
+    }
 
-//        return 0;
-//    }
-
-    //pt::ptree tmpPtree;
     TobiiResearchStatus status = tobii_research_screen_based_calibration_enter_calibration_mode(eye_tracker);
-
-    //string tmp;
-    if (status == TOBII_RESEARCH_STATUS_OK){}
-        //chrome->sendMsg("10"); // means successful start of calibration process
+    if (status == TOBII_RESEARCH_STATUS_OK)
+        uiHandler(EYE_TRACKER_SUCESSFULL_CALIBRATION_START); // means successful start of calibration process
     else {
-        //chrome->sendMsg("11"); // means "can't start calibration mode"
+        uiHandler(EYE_TRACKER_FAILED_CALIBRATION); // means "can't start calibration mode"
         return 0;
     }
     /* Define the points on screen we should calibrate at. */
@@ -77,61 +94,60 @@ int eyeTracker::calibrate()
         size_t i = 0;
         for (; i < NUM_OF_POINTS; i++) {
             TobiiResearchNormalizedPoint2D* point = &points_to_calibrate[i];
-            //tmpPtree.put("x", point->x);
-            //tmpPtree.put("y", point->y);
+            jsonPoint["x"]=point->x;
+            jsonPoint["y"]=point->y;
+            uiHandler(EYE_TRACKER_POINT_TO_CALIBRATE+QJsonDocument(jsonPoint).toJson(QJsonDocument::Compact));
+            QThread::msleep(jsonPoint["time"].toInt());
 
-            //chrome->makeActionInApp(SEND_COORDINATES_FOR_CALIBRATION, &tmpPtree);
-            //tmpPtree.clear();
-            //  Wait a little for user to focus.
-            //boost::this_thread::sleep_for(boost::chrono::milliseconds(800));
-
-            cout<< "Collecting data at" << point->x<< " "<<point->y;
+            qDebug()<< "Collecting data at" << point->x<< " "<<point->y;
             if (tobii_research_screen_based_calibration_collect_data(eye_tracker, point->x, point->y) != TOBII_RESEARCH_STATUS_OK) {
                 /* Try again if it didn't go well the first time. */
                 /* Not all eye tracker models will fail at this point, but instead fail on ComputeAndApply. */
                 tobii_research_screen_based_calibration_collect_data(eye_tracker, point->x, point->y);
             }
         }
-        cout<<("Computing and applying calibration.\n");
+        qDebug()<<("Computing and applying calibration.\n");
+        uiHandler(EYE_TRACKER_COMPUTING_AND_APPLYING_CALIBRATION);
+
         TobiiResearchCalibrationResult* calibration_result = NULL;
         status = tobii_research_screen_based_calibration_compute_and_apply(eye_tracker, &calibration_result);
         if (status == TOBII_RESEARCH_STATUS_OK && calibration_result->status == TOBII_RESEARCH_CALIBRATION_SUCCESS) {
-            cout << ("Compute and apply returned %i and collected at %zu points.\n", status, calibration_result->calibration_point_count);
+            qDebug() << "Compute and apply returned "<<status<<" and collected at "<<calibration_result->calibration_point_count<<" points.\n";
         }
         else {
-            cout << ("Calibration failed!\n");
+            qDebug() << "Calibration failed!\n";
         }
         /* Free calibration result when done using it */
         tobii_research_free_screen_based_calibration_result(calibration_result);
         /* Analyze the data and maybe remove points that weren't good. */
-        TobiiResearchNormalizedPoint2D* recalibrate_point = &points_to_calibrate[1];
-        cout << ("Removing calibration point at (%f,%f).\n", recalibrate_point->x, recalibrate_point->y);
-        status = tobii_research_screen_based_calibration_discard_data(eye_tracker, recalibrate_point->x, recalibrate_point->y);
-        /* Redo collection at the discarded point */
+//        TobiiResearchNormalizedPoint2D* recalibrate_point = &points_to_calibrate[1];
+//        qDebug() << "Removing calibration point at ("<<recalibrate_point->x<<","<<recalibrate_point->y<<").\n";
+//        status = tobii_research_screen_based_calibration_discard_data(eye_tracker, recalibrate_point->x, recalibrate_point->y);
+//        /* Redo collection at the discarded point */
 
-        tobii_research_screen_based_calibration_collect_data(eye_tracker, recalibrate_point->x, recalibrate_point->y);
-        /* Compute and apply again. */
-        cout << ("Computing and applying calibration.\n");
-        status = tobii_research_screen_based_calibration_compute_and_apply(eye_tracker, &calibration_result);
-        if (status == TOBII_RESEARCH_STATUS_OK && calibration_result->status == TOBII_RESEARCH_CALIBRATION_SUCCESS) {
-            cout << ("Compute and apply returned %i and collected at %zu points.\n", status, calibration_result->calibration_point_count);
-        }
-        else {
-            cout << ("Calibration failed!\n");
-        }
+//        tobii_research_screen_based_calibration_collect_data(eye_tracker, recalibrate_point->x, recalibrate_point->y);
+//        /* Compute and apply again. */
+//        qDebug() << ("Computing and applying calibration.\n");
+//        status = tobii_research_screen_based_calibration_compute_and_apply(eye_tracker, &calibration_result);
+//        if (status == TOBII_RESEARCH_STATUS_OK && calibration_result->status == TOBII_RESEARCH_CALIBRATION_SUCCESS) {
+//            cout << ("Compute and apply returned %i and collected at %zu points.\n", status, calibration_result->calibration_point_count);
+//        }
+//        else {
+//            cout << ("Calibration failed!\n");
+//        }
         /* Free calibration result when done using it */
-        tobii_research_free_screen_based_calibration_result(calibration_result);
+        //tobii_research_free_screen_based_calibration_result(calibration_result);
         /* See that you're happy with the result. */
     }
     /* The calibration is done. Leave calibration mode. */
     status = tobii_research_screen_based_calibration_leave_calibration_mode(eye_tracker);
-    if(status)
-    cout << ("Left calibration mode.\n");
-    //chrome->sendMsg("19"); // means "closing calibration mode"
+    if(status);
+    qDebug() << QString("Left calibration mode.\n");
+    uiHandler(EYE_TRACKER_LEAVE_CALIBRATION_MODE);
     return 0;
 }
 
-int eyeTracker::startTrackingAsinc()
+int EyeTracker::startTrackingAsinc()
 {
 
 }
@@ -140,13 +156,13 @@ void gaze_data_callback(TobiiResearchGazeData* gaze_data, void* user_data) {
     memcpy(user_data, gaze_data, sizeof(*gaze_data));
 }
 
-void eyeTracker::gaze_data(TobiiResearchEyeTracker* eyetracker) {
+void EyeTracker::gaze_data(TobiiResearchEyeTracker* eyetracker) {
     //pt::ptree tmpPtree;
     TobiiResearchGazeData gaze_data;
     TobiiResearchStatus status = tobii_research_subscribe_to_gaze_data(eye_tracker, gaze_data_callback, &gaze_data);
     if (status != TOBII_RESEARCH_STATUS_OK)
         return;
-    ///* Wait while some gaze data is collected. */
+    // Wait while some gaze data is collected.
 
     for (int i = 0; i < 200; i++) {
         //tmpPtree.put("x", ((gaze_data.left_eye.gaze_point.position_on_display_area.x + gaze_data.right_eye.gaze_point.position_on_display_area.x) / 2));
