@@ -40,12 +40,15 @@ HEADERS += \
     BCIs/bci.h \
     widgets/eyeTracker/calibration/calibration.h
 
-FORMS +=
+#FORMS +=
 
 #LIBS += /usr/local/lib/tobii_research
-macx:LIBS += -ltobii_research -L/usr/local/lib/tobii_research
+#macx:LIBS += -ltobii_research -L/usr/local/lib/tobii_research
+LIBS += /I"Z:\Documents\Develop\I-can-read-ur-mind----Qt\TobiiPro.SDK.C_Binding.Windows_1.2.1.55_64\include" "Z:\Documents\Develop\I-can-read-ur-mind----Qt\TobiiPro.SDK.C_Binding.Windows_1.2.1.55_64\lib\tobii_research.lib"
+
 
 #INCLUDEPATH += /usr/local/include
 macx:INCLUDEPATH += /usr/local/include
+win32:INCLUDEPATH += ..\TobiiPro.SDK.C_Binding.Windows_1.2.1.55_64\include
 
 

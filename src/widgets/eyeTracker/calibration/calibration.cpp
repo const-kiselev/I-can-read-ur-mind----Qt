@@ -7,9 +7,23 @@ Calibration::Calibration(QWidget *parent) : QWidget(parent)
     QVBoxLayout *pvbxLayout = new QVBoxLayout();
     pvbxLayout->addWidget(pcmd1);
     this->setLayout(pvbxLayout);
+    calibPainter = new QPainter(parent);
+    calibPainter->setRenderHint(QPainter::Antialiasing, true);
+    calibPainter->setBrush(QBrush(Qt::red));
+    calibPainter->setPen(QPen(Qt::black));
+    calibPainter->drawEllipse(QRect(50, 50, 10, 10));
 }
 
 int Calibration::openCalibrationWidget()
+{
+    QPushButton *pcmd1 = new QPushButton("Начать калибровку");
+    QVBoxLayout *tmpLayOut = new QVBoxLayout;
+    tmpLayOut->addWidget(pcmd1);
+    this->setLayout(tmpLayOut);
+    return 0;
+}
+
+void Calibration::printPoint(int inX, int inY)
 {
 
 }

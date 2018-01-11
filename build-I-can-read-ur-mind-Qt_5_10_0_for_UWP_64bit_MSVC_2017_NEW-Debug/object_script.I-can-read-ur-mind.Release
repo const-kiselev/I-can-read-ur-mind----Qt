@@ -1,0 +1,14 @@
+INPUT(
+./release\main.o
+./release\main-window.o
+./release\additional_lib.o
+./release\eye-tracker.o
+./release\menu.o
+./release\bci.o
+./release\calibration.o
+./release\moc_main-window.o
+./release\moc_eye-tracker.o
+./release\moc_menu.o
+./release\moc_bci.o
+./release\moc_calibration.o
+);

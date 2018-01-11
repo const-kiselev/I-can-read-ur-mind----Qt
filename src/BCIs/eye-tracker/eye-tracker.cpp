@@ -141,7 +141,7 @@ int EyeTracker::calibrate()
     }
     /* The calibration is done. Leave calibration mode. */
     status = tobii_research_screen_based_calibration_leave_calibration_mode(eye_tracker);
-    if(status);
+    //if(status);
     qDebug() << QString("Left calibration mode.\n");
     uiHandler(EYE_TRACKER_LEAVE_CALIBRATION_MODE);
     return 0;
@@ -149,14 +149,14 @@ int EyeTracker::calibrate()
 
 int EyeTracker::startTrackingAsinc()
 {
-
+    return 0;
 }
 
 void gaze_data_callback(TobiiResearchGazeData* gaze_data, void* user_data) {
     memcpy(user_data, gaze_data, sizeof(*gaze_data));
 }
 
-void EyeTracker::gaze_data(TobiiResearchEyeTracker* eyetracker) {
+void EyeTracker::gaze_data(TobiiResearchEyeTracker* inEyetracker) {
     //pt::ptree tmpPtree;
     TobiiResearchGazeData gaze_data;
     TobiiResearchStatus status = tobii_research_subscribe_to_gaze_data(eye_tracker, gaze_data_callback, &gaze_data);

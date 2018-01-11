@@ -45,7 +45,7 @@ int MainWindow::signalsHandler(const QString &inSignal)
 
 int MainWindow::startInitProcess()
 {
-    QWidget *pInitWidget = new QWidget(this);
+    //QWidget *pInitWidget = new QWidget(this);
     QLabel labelInit("Инициализация всех устройств");
     stackedWidget->addWidget(&labelInit);
     stackedWidget->setCurrentWidget(&labelInit);
@@ -64,4 +64,5 @@ int MainWindow::startInitProcess()
 int MainWindow::breakInitProcess()
 {
     stackedWidget->setCurrentWidget(pMenu);
+    return 0;
 }
