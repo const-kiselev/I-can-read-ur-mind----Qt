@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include <QPainter>
-#include <additional_header.h>
+#include "src/additional_header.h"
 
 #define NUM_OF_CALIBRATION_FRAMES 100
 

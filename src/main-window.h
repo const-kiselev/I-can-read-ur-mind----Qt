@@ -4,9 +4,9 @@
 #include <QMainWindow>
 #include <QFrame>
 #include <QStackedWidget>
-#include <widgets/menu/menu.h>
-#include <widgets/eyeTracker/calibration/calibration.h>
-#include <additional_header.h>
+#include "widgets/menu/menu.h"
+#include "widgets/eyeTracker/calibration/calibration.h"
+#include "additional_header.h"
 
 class MainWindow : public QMainWindow
 {

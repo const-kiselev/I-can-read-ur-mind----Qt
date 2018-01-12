@@ -9,7 +9,7 @@
 #include <tobii_research_calibration.h>
 #include <tobii_research_eyetracker.h>
 #include <tobii_research_streams.h>
-#include <additional_header.h>
+#include "src/additional_header.h"
 #include <QThread>
 
 

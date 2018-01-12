@@ -1,5 +1,5 @@
 #include "main-window.h"
-#include <BCIs/eye-tracker/eye-tracker.h>
+#include "BCIs/eye-tracker/eye-tracker.h"
 #include <QApplication>
 #include <QTimer>
 

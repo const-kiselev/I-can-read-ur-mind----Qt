@@ -24,31 +24,26 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += \
-    main.cpp \
-    main-window.cpp \
-    additional_lib.cpp \
-    BCIs/eye-tracker/eye-tracker.cpp \
-    widgets/menu/menu.cpp \
-    BCIs/bci.cpp \
-    widgets/eyeTracker/calibration/calibration.cpp
+    src/main.cpp \
+    src/main-window.cpp \
+    src/additional_lib.cpp \
+    src/BCIs/eye-tracker/eye-tracker.cpp \
+    src/widgets/menu/menu.cpp \
+    src/BCIs/bci.cpp \
+    src/widgets/eyeTracker/calibration/calibration.cpp
 
 HEADERS += \
-    main-window.h \
-    additional_header.h \
-    BCIs/eye-tracker/eye-tracker.h \
-    widgets/menu/menu.h \
-    BCIs/bci.h \
-    widgets/eyeTracker/calibration/calibration.h
+    src/main-window.h \
+    src/additional_header.h \
+    src/BCIs/eye-tracker/eye-tracker.h \
+    src/widgets/menu/menu.h \
+    src/BCIs/bci.h \
+    src/widgets/eyeTracker/calibration/calibration.h
 
 #FORMS +=
 
-#LIBS += /usr/local/lib/tobii_research
-#macx:LIBS += -ltobii_research -L/usr/local/lib/tobii_research
-LIBS += /I"Z:\Documents\Develop\I-can-read-ur-mind----Qt\TobiiPro.SDK.C_Binding.Windows_1.2.1.55_64\include" "Z:\Documents\Develop\I-can-read-ur-mind----Qt\TobiiPro.SDK.C_Binding.Windows_1.2.1.55_64\lib\tobii_research.lib"
 
+win32:LIBS += -L$$PWD/3rdparty/tobii_research/lib/ -ltobii_research
 
-#INCLUDEPATH += /usr/local/include
-macx:INCLUDEPATH += /usr/local/include
-win32:INCLUDEPATH += ..\TobiiPro.SDK.C_Binding.Windows_1.2.1.55_64\include
-
-
+INCLUDEPATH += $$PWD/3rdparty/tobii_research/include
+DEPENDPATH += $$PWD/3rdparty/tobii_research/include
