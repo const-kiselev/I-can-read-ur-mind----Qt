@@ -20,6 +20,7 @@ public:
     EyeTracker();
     ~EyeTracker();
     //function<int(string)> getHandler();
+
 signals:
     void uiHandler(const QString&);
 public slots:

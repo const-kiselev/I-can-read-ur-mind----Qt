@@ -4,7 +4,6 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
     stackedWidget = new QStackedWidget;
-    startInitProcess();
 }
 
 MainWindow::~MainWindow()
@@ -12,8 +11,14 @@ MainWindow::~MainWindow()
     delete stackedWidget;
 }
 
+void MainWindow::init()
+{
+    startInitProcess();
+}
+
 int MainWindow::signalsHandler(const QString &inSignal)
 {
+    qDebug() << "MainWindow::signalsHandler recieved: " << inSignal << endl;
     if(inSignal == EYE_TRACKER_SUCESSFULL_INIT){
         menuHandler(MENU_ADD_EYE_TRACKER_ACTIONS);
         breakInitProcess();
@@ -57,7 +62,7 @@ int MainWindow::startInitProcess()
 
     stackedWidget->addWidget(pMenu);
 
-    emit eyeTrakerHandler("init");
+    emit eyeTrakerHandler(EYE_TRACKER_INIT);
     return 0;
 }
 

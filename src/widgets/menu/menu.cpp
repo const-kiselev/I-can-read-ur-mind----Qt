@@ -25,8 +25,9 @@ int Menu::signalsHandler(const QString &inSignal)
 
         this->setLayout(pvbxLayout);
 
-        connect(pcmd1, SIGNAL(clicked()), pMainWin,
-                SLOT(signalsHandler(MENU_OPEN_EYE_TRACKER_CALIBRATION_WIDGET)));
+       connect(pcmd1, &QPushButton::clicked, pMainWin,
+               [=](){((MainWindow*)pMainWin)->signalsHandler(MENU_OPEN_EYE_TRACKER_CALIBRATION_WIDGET); });
+
     }
     return 0;
 }

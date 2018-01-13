@@ -12,9 +12,9 @@ EyeTracker::~EyeTracker()
     //if(eyeTracker) // Резлизовать!!!
 
 }
-
 int EyeTracker::signalsHandler(const QString &inSignal)
 {
+    qDebug() << "EyeTracker::signalsHandler recieved: " << inSignal << endl;
     if(inSignal == EYE_TRACKER_INIT){
         if(init())
             uiHandler(EYE_TRACKER_FAILED_INIT);
@@ -57,6 +57,9 @@ int EyeTracker::init()
 
 int EyeTracker::calibrate()
 {
+    if (NO_ET) {
+        return 0;
+    }
     QJsonObject jsonPoint;
     jsonPoint["x"]=0.0f;
     jsonPoint["y"]=0.0f;

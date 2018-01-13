@@ -15,6 +15,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+    void init();
 signals:
     void eyeTrakerHandler(const QString&);
     void menuHandler(const QString&);

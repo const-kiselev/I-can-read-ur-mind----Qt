@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include "src/additional_header.h"
+#include "src/main-window.h"
 
 class Menu : public QWidget
 {

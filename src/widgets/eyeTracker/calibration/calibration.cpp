@@ -12,14 +12,13 @@ Calibration::Calibration(QWidget *parent) : QWidget(parent)
     calibPainter->setBrush(QBrush(Qt::red));
     calibPainter->setPen(QPen(Qt::black));
     calibPainter->drawEllipse(QRect(50, 50, 10, 10));
+
+    connect(pcmd1, &QPushButton::clicked, this, &Calibration::openCalibrationWidget);
 }
 
 int Calibration::openCalibrationWidget()
 {
-    QPushButton *pcmd1 = new QPushButton("Начать калибровку");
-    QVBoxLayout *tmpLayOut = new QVBoxLayout;
-    tmpLayOut->addWidget(pcmd1);
-    this->setLayout(tmpLayOut);
+    qDebug()<< "i'm in openCalibrationWidget";
     return 0;
 }
 
