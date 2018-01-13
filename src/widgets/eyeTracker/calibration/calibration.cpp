@@ -7,7 +7,7 @@ Calibration::Calibration(QWidget *parent) : QWidget(parent)
     QVBoxLayout *pvbxLayout = new QVBoxLayout();
     pvbxLayout->addWidget(pcmd1);
     this->setLayout(pvbxLayout);
-    calibPainter = new QPainter(parent);
+    calibPainter = new QPainter(this);
     calibPainter->setRenderHint(QPainter::Antialiasing, true);
     calibPainter->setBrush(QBrush(Qt::red));
     calibPainter->setPen(QPen(Qt::black));

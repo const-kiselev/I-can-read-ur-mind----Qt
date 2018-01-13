@@ -40,11 +40,6 @@ int MainWindow::signalsHandler(const QString &inSignal)
         stackedWidget->addWidget(tmpWidget);
         stackedWidget->setCurrentWidget(tmpWidget);
     }
-    else if(inSignal == CALIBRATION_WIDGET_REQUEST_START){
-        ((Calibration*)stackedWidget->currentWidget())
-                ->openCalibrationWidget();
-        eyeTrakerHandler(EYE_TRACKER_START_CALIBRATION);
-    }
     return 0;
 }
 

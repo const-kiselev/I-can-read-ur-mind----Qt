@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.5.0, 2018-01-14T01:10:13. -->
+<!-- Written by QtCreator 4.5.0, 2018-01-13T20:42:49. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
-  <value type="QByteArray">{81428796-1e36-497d-95ab-8f7c70421a43}</value>
+  <value type="QByteArray">{ec0e3d20-c5cf-47f3-a7d5-d904d4f551c1}</value>
  </data>
  <data>
   <variable>ProjectExplorer.Project.ActiveTarget</variable>
@@ -285,8 +285,8 @@
     <value type="int" key="PE.EnvironmentAspect.Base">2</value>
     <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">I-can-read-ur-mind</value>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName"></value>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4RunConfiguration:C:/Users/konstantin_kiselev/Documents/Develop/I-can-read-ur-mind----Qt/I-can-read-ur-mind.pro</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">I-can-read-ur-mind2</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4RunConfiguration:C:/Users/const/Documents/Develop/I-can-read-ur-mind----Qt/I-can-read-ur-mind.pro</value>
     <value type="bool" key="QmakeProjectManager.QmakeRunConfiguration.UseLibrarySearchPath">true</value>
     <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.CommandLineArguments"></value>
     <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.ProFile">I-can-read-ur-mind.pro</value>
