@@ -26,8 +26,8 @@ int MainWindow::signalsHandler(const QString &inSignal)
     else if(inSignal == EYE_TRACKER_SUCESSFULL_CALIBRATION_START){
 
     }
-    else if(inSignal == EYE_TRACKER_POINT_TO_CALIBRATE){
-
+    else if(inSignal.mid(0,3) == EYE_TRACKER_POINT_TO_CALIBRATE){
+        emit stdHandler(inSignal);
     }
     else if(inSignal == EYE_TRACKER_LEAVE_CALIBRATION_MODE){
         QWidget *tmpWidget = stackedWidget->currentWidget();
@@ -36,9 +36,13 @@ int MainWindow::signalsHandler(const QString &inSignal)
         delete tmpWidget;
     }
     else if(inSignal == MENU_OPEN_EYE_TRACKER_CALIBRATION_WIDGET){
-        QWidget *tmpWidget = new Calibration(this);
-        stackedWidget->addWidget(tmpWidget);
-        stackedWidget->setCurrentWidget(tmpWidget);
+        pMainCalib = new Calibration(this);
+        stackedWidget->addWidget(pMainCalib);
+        stackedWidget->setCurrentWidget(pMainCalib);
+        connect(this, SIGNAL(stdHandler(QString)), (Calibration*)pMainCalib, SLOT(signalsHandler(QString)));
+    }
+    else if(inSignal==MENU_START_CALIBRATION){
+        emit eyeTrakerHandler(MENU_START_CALIBRATION);
     }
     return 0;
 }

@@ -22,13 +22,16 @@ int EyeTracker::signalsHandler(const QString &inSignal)
             uiHandler(EYE_TRACKER_SUCESSFULL_INIT);
     }
     else if(inSignal == "calibrate"){
-        calibrate();
+
     }
     else if(inSignal == "subscribe"){
 
     }
     else if(inSignal == "unsubscribe"){
 
+    }
+    else if(inSignal==MENU_START_CALIBRATION){
+        calibrate();
     }
     return 0;
 }
@@ -63,7 +66,7 @@ int EyeTracker::calibrate()
     QJsonObject jsonPoint;
     jsonPoint["x"]=0.0f;
     jsonPoint["y"]=0.0f;
-    jsonPoint["time"] = 800;
+    jsonPoint["time"] = 4000;
     // TODO: gроверить все cout, чтобы корректно отображались
     // TODO: реализовать тестирование класса без айТрекера
     if (NO_ET) {

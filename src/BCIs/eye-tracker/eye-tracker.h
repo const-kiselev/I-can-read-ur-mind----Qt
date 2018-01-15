@@ -1,8 +1,6 @@
 #ifndef EYETRACKE_H
 #define EYETRACKE_H
 
-#define NO_ET true
-
 
 #include <QApplication>
 #include <tobii_research.h>

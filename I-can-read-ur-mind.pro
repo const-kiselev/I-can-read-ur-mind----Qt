@@ -47,3 +47,7 @@ win32:LIBS += -L$$PWD/3rdparty/tobii_research/lib/ -ltobii_research
 
 INCLUDEPATH += $$PWD/3rdparty/tobii_research/include
 DEPENDPATH += $$PWD/3rdparty/tobii_research/include
+
+RESOURCES += \
+    res.qrc \
+    src/resources.qrc

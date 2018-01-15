@@ -2,57 +2,146 @@
 
 Calibration::Calibration(QWidget *parent) : QWidget(parent)
 {
-    xDisp = yDisp = -1;
+    circlePixmap = nullptr;
+    calibWidgetOpen = false;
+    wayTime = 800;
+
+    stLayout = new QStackedLayout;
+    QVBoxLayout *vbxLayout = new QVBoxLayout;
+    vbxLayout->addLayout(stLayout);
+    setLayout(vbxLayout);
+    viewStartButtonWidget();
+    // draw the pixmap of circle
+    circleStandartPainter = new QPainter;
+    makeSprite();
+    connect(this, SIGNAL(sendSignal(QString)), (MainWindow*)parent, SLOT(signalsHandler(QString)));
+}
+
+void Calibration::makeSprite()
+{
+    if(circlePixmap){
+        delete circlePixmap;
+        circlePixmap = nullptr;
+    }
+    else
+        circlePixmap = new QPixmap(30, 30);
+    circlePixmap->setMask(circlePixmap->createHeuristicMask()); // set the alpha!!!
+    circleStandartPainter->begin(circlePixmap);
+    circleStandartPainter->setRenderHint(QPainter::Antialiasing, true);
+    circleStandartPainter->setBrush(QBrush(Qt::green, Qt::SolidPattern));
+    circleStandartPainter->setPen(QPen(Qt::NoPen));
+    circleStandartPainter->drawEllipse(0,0,30, 30);
+    circleStandartPainter->end();
+    circleRect = QRect(0,0,30,30);
+}
+
+void Calibration::viewStartButtonWidget()
+{
     QPushButton *pcmd1 = new QPushButton("Начать калибровку");
     QVBoxLayout *pvbxLayout = new QVBoxLayout();
     pvbxLayout->addWidget(pcmd1);
-    this->setLayout(pvbxLayout);
-    calibPainter = new QPainter(this);
-    calibPainter->setRenderHint(QPainter::Antialiasing, true);
-    calibPainter->setBrush(QBrush(Qt::red));
-    calibPainter->setPen(QPen(Qt::black));
-    calibPainter->drawEllipse(QRect(50, 50, 10, 10));
-
-    connect(pcmd1, &QPushButton::clicked, this, &Calibration::openCalibrationWidget);
+    stLayout->addWidget(pcmd1);
+    stLayout->setCurrentWidget(pcmd1);
+    connect(pcmd1, &QPushButton::clicked, this,[=](){ openCalibrationWidget();
+        QTimer::singleShot(1000, this, [=](){emit sendSignal(MENU_START_CALIBRATION);});
+                                                    });
 }
 
-int Calibration::openCalibrationWidget()
+void Calibration::testMoveWindow()
 {
-    qDebug()<< "i'm in openCalibrationWidget";
-    return 0;
+    QWidget *testMoveWin = new QWidget;
+    QPushButton *pcmd1 = new QPushButton("Начать калибровку");
+    QPushButton *pcmd2 = new QPushButton("Loading page...");
+    QLabel *plblX = new QLabel("X value:");
+    QLabel *plblY = new QLabel("Y value:");
+    QLabel *plblTime = new QLabel("Time:");
+    QLineEdit *ptxtEditX = new QLineEdit;
+    QLineEdit *ptxtEditY = new QLineEdit;
+    QLineEdit *ptxtEditTime = new QLineEdit;
+    QVBoxLayout *pvbxLayout = new QVBoxLayout();
+    pvbxLayout->addWidget(plblX);
+    pvbxLayout->addWidget(ptxtEditX);
+    pvbxLayout->addWidget(plblY);
+    pvbxLayout->addWidget(ptxtEditY);
+    pvbxLayout->addWidget(plblTime);
+    pvbxLayout->addWidget(ptxtEditTime);
+    pvbxLayout->addWidget(pcmd1);
+    pvbxLayout->addWidget(pcmd2);
+    testMoveWin->setLayout(pvbxLayout);
+    testMoveWin->show();
+    connect(pcmd1, &QPushButton::clicked, this,
+            [=](){this->moveTo(ptxtEditX->text().toDouble(), ptxtEditY->text().toDouble(), ptxtEditTime->text().toInt());});
+    connect(pcmd2, &QPushButton::clicked, this, &Calibration::loading);
 }
 
-void Calibration::printPoint(int inX, int inY)
+void Calibration::loading()
 {
+    QWidget* tmpWid = new QWidget;
+    QMovie *movie = new QMovie(":/img/spinner");
+    QVBoxLayout *pvbx = new QVBoxLayout;
+    QLabel *processLabel = new QLabel;
+    processLabel->setMovie(movie);
+     movie->start();
+     pvbx->addWidget(processLabel);
+     pvbx->addWidget(new QLabel("<CENTER>Обработка данных...</CENTER>"));
+     pvbx->setAlignment(Qt::AlignCenter);
+     tmpWid->setLayout(pvbx);
+    stLayout->addWidget(tmpWid);
+    calibWidgetOpen = false;
+    stLayout->setCurrentWidget(tmpWid);
 
 }
+
+void Calibration::openCalibrationWidget()
+{
+    QWidget *tmpOne = new QWidget;
+    stLayout->addWidget(tmpOne);
+    stLayout->setCurrentWidget(tmpOne);
+    calibWidgetOpen = true;
+    setPos(QPointF(-circleRect.width(), height()));
+    if(NO_ET)
+    {
+        testMoveWindow();
+        return;
+    }
+    update();
+
+}
+
 
 void Calibration::moveTo(double inX, double inY, int msTime)
 {
-    int xPrint, yPrint,
-            xWidth = this->width(),
-            yHeight = this->height();
-    if((xDisp == yDisp) &&(xDisp == -1)){
-        printPoint(inX*xWidth, inY*yHeight);
-        xDisp = inX*xWidth;
-        yDisp = inY*yHeight;
-        return;
-    }
-    int destinyX = inX*xWidth,
-            destinyY = inY*yHeight;
-    double k,
-            lenght = sqrt( (destinyX - xDisp)*(destinyX - xDisp) +
-                             (destinyY - yDisp)*(destinyY - yDisp) );
-    int sleepTime = msTime/lenght,
-            resultY, resultX;
+    qDebug() << "I'm in moveTo()";
+    propertyAnimation = new QPropertyAnimation(this, "pos");
+    propertyAnimation->setDuration(msTime);
+    propertyAnimation->setStartValue(QPointF(circleRect.x(), circleRect.y()));
+    propertyAnimation->setEndValue(QPointF(width()*inX, height()*inY));
+    propertyAnimation->setEasingCurve(QEasingCurve::InOutCubic);
+    propertyAnimation->start();
+}
 
-    for(int i=0; i <= lenght; i++){
-        k = i/lenght;
-        xPrint = xDisp + (inX - xDisp)*k;
-        yPrint = yDisp + (inY - yDisp)*k;
-        printPoint(xPrint, yPrint);
-        QThread::msleep(sleepTime);
+void Calibration::paintEvent(QPaintEvent *)
+{
+    qDebug() << "Try to print";
+    if (!calibWidgetOpen) return;
+    circleStandartPainter->begin(this); // todo: change the logic of circleRect var!!!!
+    circleStandartPainter->drawPixmap(circleRect.x(), circleRect.y(), 30, 30,*circlePixmap);
+    circleStandartPainter->end();
+}
+
+int Calibration::signalsHandler(const QString &inSignal)
+{
+    if(inSignal.mid(0,3) == EYE_TRACKER_POINT_TO_CALIBRATE){
+        // Parse document
+        QJsonDocument doc(QJsonDocument::fromJson(inSignal.mid(3,inSignal.length()-3).toUtf8()));
+        // Get JSON object
+        QJsonObject json = doc.object();
+        qDebug() << inSignal.mid(2,inSignal.length()-3);
+        qDebug() << json;
+        // Access properties
+        qDebug() << json["x"].toDouble() << " " << json["y"].toDouble();
+        moveTo(json["x"].toDouble(), json["y"].toDouble(), json["time"].toInt());
     }
-    if( (xPrint!= destinyX) || (yPrint!=destinyY) )
-        printPoint(destinyX, destinyY);
+    return 0;
+
 }

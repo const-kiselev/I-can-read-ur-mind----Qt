@@ -5,6 +5,8 @@
 #include <QDebug>
 #include <QtWidgets>
 
+#define NO_ET false
+
 #define MAX_CMD_LENGTH 2
 
 const QString OTHER_SIGNAL_WITH_DATA = "000";
@@ -21,7 +23,7 @@ const QString EYE_TRACKER_LEAVE_CALIBRATION_MODE = "119";
 
 const QString MENU_ADD_EYE_TRACKER_ACTIONS = "200";
 const QString MENU_OPEN_EYE_TRACKER_CALIBRATION_WIDGET = "201";
-
+const QString MENU_START_CALIBRATION = "202";
 
 void JSON_read();
 void JSON_create();
