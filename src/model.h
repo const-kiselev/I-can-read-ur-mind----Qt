@@ -18,7 +18,7 @@ public slots:
     void handler(const QString &inString);
 private:
     EyeTracker *_eyeTracker;
-    ModelThread _thread;
+    ModelThread _modelThread;
 };
 
 class ModelThread: QThread

@@ -77,7 +77,7 @@ int EyeTracker::calibrate()
             jsonPoint["x"]=point->x;
             jsonPoint["y"]=point->y;
             emit sendSignal(EYE_TRACKER_POINT_TO_CALIBRATE+QJsonDocument(jsonPoint).toJson(QJsonDocument::Compact));
-            QThread::msleep(jsonPoint["time"].toInt());
+            QThread::msleep(jsonPoint["time"].toInt()+500);
 
             qDebug()<< "Collecting data at" << point->x<< " "<<point->y;
             if (tobii_research_screen_based_calibration_collect_data(eye_tracker, point->x, point->y) != TOBII_RESEARCH_STATUS_OK) {

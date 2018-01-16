@@ -129,20 +129,3 @@ void Calibration::paintEvent(QPaintEvent *)
     circleStandartPainter->drawPixmap(circleRect.x(), circleRect.y(), 30, 30,*circlePixmap);
     circleStandartPainter->end();
 }
-
-int Calibration::signalsHandler(const QString &inSignal)
-{
-    if(inSignal.mid(0,3) == EYE_TRACKER_POINT_TO_CALIBRATE){
-        // Parse document
-        QJsonDocument doc(QJsonDocument::fromJson(inSignal.mid(3,inSignal.length()-3).toUtf8()));
-        // Get JSON object
-        QJsonObject json = doc.object();
-        qDebug() << inSignal.mid(2,inSignal.length()-3);
-        qDebug() << json;
-        // Access properties
-        qDebug() << json["x"].toDouble() << " " << json["y"].toDouble();
-        moveTo(json["x"].toDouble(), json["y"].toDouble(), json["time"].toInt());
-    }
-    return 0;
-
-}

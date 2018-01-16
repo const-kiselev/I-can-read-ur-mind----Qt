@@ -37,5 +37,8 @@ void View::handler(const QString &inString)
     else if(inString == VIEW_CALIBRATION_WIDGET_READY){
         controllerHandler(VIEW_CALIBRATION_WIDGET_READY);
     }
+    else if(inString.mid(0,3)==EYE_TRACKER_POINT_TO_CALIBRATE){
+
+    }
 
 }
