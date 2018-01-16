@@ -12,29 +12,7 @@ EyeTracker::~EyeTracker()
     //if(eyeTracker) // Резлизовать!!!
 
 }
-int EyeTracker::signalsHandler(const QString &inSignal)
-{
-    qDebug() << "EyeTracker::signalsHandler recieved: " << inSignal << endl;
-    if(inSignal == EYE_TRACKER_INIT){
-        if(init())
-            uiHandler(EYE_TRACKER_FAILED_INIT);
-        else
-            uiHandler(EYE_TRACKER_SUCESSFULL_INIT);
-    }
-    else if(inSignal == "calibrate"){
 
-    }
-    else if(inSignal == "subscribe"){
-
-    }
-    else if(inSignal == "unsubscribe"){
-
-    }
-    else if(inSignal==MENU_START_CALIBRATION){
-        calibrate();
-    }
-    return 0;
-}
 
 int EyeTracker::init()
 {
@@ -60,17 +38,13 @@ int EyeTracker::init()
 
 int EyeTracker::calibrate()
 {
-    if (NO_ET) {
-        return 0;
-    }
     QJsonObject jsonPoint;
     jsonPoint["x"]=0.0f;
     jsonPoint["y"]=0.0f;
     jsonPoint["time"] = 4000;
-    // TODO: gроверить все cout, чтобы корректно отображались
-    // TODO: реализовать тестирование класса без айТрекера
+
     if (NO_ET) {
-        uiHandler(EYE_TRACKER_SUCESSFULL_CALIBRATION_START);
+        emit sendSignal(EYE_TRACKER_SUCESSFULL_CALIBRATION_START);
         #define NUM_OF_POINTS  9U
         TobiiResearchNormalizedPoint2D points_to_calibrate[NUM_OF_POINTS] = \
         { {0.5f, 0.5f}, { 0.6f, 0.6f }, { 0.6f, 0.4f }, { 0.4f, 0.6f }, { 0.4f, 0.4f }, { 0.05f, 0.05f }, { 0.05f, 0.95f }, { 0.95f, 0.05f }, { 0.95f, 0.95f }};
@@ -79,16 +53,16 @@ int EyeTracker::calibrate()
             TobiiResearchNormalizedPoint2D* point = &points_to_calibrate[i];
             jsonPoint["x"]=point->x;
             jsonPoint["y"]=point->y;
-            uiHandler(EYE_TRACKER_POINT_TO_CALIBRATE+QJsonDocument(jsonPoint).toJson(QJsonDocument::Compact));
+            emit sendSignal(EYE_TRACKER_POINT_TO_CALIBRATE+QJsonDocument(jsonPoint).toJson(QJsonDocument::Compact));
         }
         return 0;
     }
 
     TobiiResearchStatus status = tobii_research_screen_based_calibration_enter_calibration_mode(eye_tracker);
     if (status == TOBII_RESEARCH_STATUS_OK)
-        uiHandler(EYE_TRACKER_SUCESSFULL_CALIBRATION_START); // means successful start of calibration process
+        emit sendSignal(EYE_TRACKER_SUCESSFULL_CALIBRATION_START); // means successful start of calibration process
     else {
-        uiHandler(EYE_TRACKER_FAILED_CALIBRATION); // means "can't start calibration mode"
+        emit sendSignal(EYE_TRACKER_FAILED_CALIBRATION); // means "can't start calibration mode"
         return 0;
     }
     /* Define the points on screen we should calibrate at. */
@@ -102,7 +76,7 @@ int EyeTracker::calibrate()
             TobiiResearchNormalizedPoint2D* point = &points_to_calibrate[i];
             jsonPoint["x"]=point->x;
             jsonPoint["y"]=point->y;
-            uiHandler(EYE_TRACKER_POINT_TO_CALIBRATE+QJsonDocument(jsonPoint).toJson(QJsonDocument::Compact));
+            emit sendSignal(EYE_TRACKER_POINT_TO_CALIBRATE+QJsonDocument(jsonPoint).toJson(QJsonDocument::Compact));
             QThread::msleep(jsonPoint["time"].toInt());
 
             qDebug()<< "Collecting data at" << point->x<< " "<<point->y;
@@ -113,7 +87,7 @@ int EyeTracker::calibrate()
             }
         }
         qDebug()<<("Computing and applying calibration.\n");
-        uiHandler(EYE_TRACKER_COMPUTING_AND_APPLYING_CALIBRATION);
+        emit sendSignal(EYE_TRACKER_COMPUTING_AND_APPLYING_CALIBRATION);
 
         TobiiResearchCalibrationResult* calibration_result = NULL;
         status = tobii_research_screen_based_calibration_compute_and_apply(eye_tracker, &calibration_result);
@@ -149,7 +123,8 @@ int EyeTracker::calibrate()
     status = tobii_research_screen_based_calibration_leave_calibration_mode(eye_tracker);
     //if(status);
     qDebug() << QString("Left calibration mode.\n");
-    uiHandler(EYE_TRACKER_LEAVE_CALIBRATION_MODE);
+    emit sendSignal(EYE_TRACKER_LEAVE_CALIBRATION_MODE);
+    emit finished();
     return 0;
 }
 
@@ -181,12 +156,3 @@ void EyeTracker::gaze_data(TobiiResearchEyeTracker* inEyetracker) {
     status = tobii_research_unsubscribe_from_gaze_data(eye_tracker, gaze_data_callback);
 
 }
-
-
-/*
-function<int(string)> ET::getHandler()
-{
-    return bind(&ET::handler, this, placeholders::_1);
-}
-*/
-

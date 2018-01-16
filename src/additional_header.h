@@ -4,6 +4,7 @@
 #include <QJsonDocument>
 #include <QDebug>
 #include <QtWidgets>
+#include <QTimer>
 
 #define NO_ET false
 
@@ -24,6 +25,14 @@ const QString EYE_TRACKER_LEAVE_CALIBRATION_MODE = "119";
 const QString MENU_ADD_EYE_TRACKER_ACTIONS = "200";
 const QString MENU_OPEN_EYE_TRACKER_CALIBRATION_WIDGET = "201";
 const QString MENU_START_CALIBRATION = "202";
+
+const QString CONTROLLER_ALL_GADGETS_SUCESSFULL_INITED = "310";
+const QString CONTROLLER_CALIBRATION_WIDGET_CLICKED_START = "311";
+
+const QString VIEW_CALIBRATION_WIDGET_READY = "400";
+const QString VIEW_INIT_COMRLETED = "401";
+
+const QString MODEL_INIT_ALL_GADGETS = "500";
 
 void JSON_read();
 void JSON_create();

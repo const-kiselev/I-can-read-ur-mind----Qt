@@ -25,20 +25,24 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     src/main.cpp \
-    src/main-window.cpp \
+    src/view/main-window.cpp \
     src/additional_lib.cpp \
-    src/BCIs/eye-tracker/eye-tracker.cpp \
-    src/widgets/menu/menu.cpp \
-    src/BCIs/bci.cpp \
-    src/widgets/eyeTracker/calibration/calibration.cpp
+    src/model/eye-tracker.cpp \
+    src/view/menu.cpp \
+    src/view/calibration.cpp \
+    src/model.cpp \
+    src/view.cpp \
+    src/controller.cpp
 
 HEADERS += \
-    src/main-window.h \
+    src/view/main-window.h \
     src/additional_header.h \
-    src/BCIs/eye-tracker/eye-tracker.h \
-    src/widgets/menu/menu.h \
-    src/BCIs/bci.h \
-    src/widgets/eyeTracker/calibration/calibration.h
+    src/model/eye-tracker.h \
+    src/view/menu.h \
+    src/view/calibration.h \
+    src/model.h \
+    src/view.h \
+    src/controller.h
 
 #FORMS +=
 
@@ -50,7 +54,3 @@ DEPENDPATH += $$PWD/3rdparty/tobii_research/include
 
 RESOURCES += \
     res.qrc
-
-STATECHARTS += \
-    src/models.scxml \
-    states.scxml

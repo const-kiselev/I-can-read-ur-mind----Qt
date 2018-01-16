@@ -3,7 +3,6 @@
 
 #include <QWidget>
 #include "src/additional_header.h"
-#include "src/main-window.h"
 
 class Menu : public QWidget
 {
@@ -12,10 +11,11 @@ class Menu : public QWidget
 public:
     explicit Menu(QWidget *parent);
     ~Menu();
-public slots:
-    int signalsHandler(const QString&);
+
+    void addEyeTrackerActions();
+signals:
+    void sendSignal(const QString&);
 private:
-    QWidget *pMainWin;
 };
 
 #endif // Menu_H

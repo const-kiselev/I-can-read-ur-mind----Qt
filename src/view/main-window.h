@@ -4,9 +4,8 @@
 #include <QMainWindow>
 #include <QFrame>
 #include <QStackedWidget>
-#include "widgets/menu/menu.h"
-#include "additional_header.h"
-#include "src/widgets/eyeTracker/calibration/calibration.h"
+#include "src/additional_header.h"
+
 
 
 class MainWindow : public QMainWindow
@@ -16,25 +15,27 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    void init();
-signals:
+    int addInViewStack(QWidget*inWidget);
+    int addAndShowInViewStack(QWidget*inWidget);
+signals:/*
     void eyeTrakerHandler(const QString&);
     void menuHandler(const QString&);
     void calibHandler(const QString&);
-    void stdHandler(const QString&);
+    void stdHandler(const QString&);*/
 public slots:
-    int signalsHandler(const QString&);
-
+//    int signalsHandler(const QString&);
 private:
 
     //Calibration *mainCalib;
+
     QStackedWidget *stackedWidget;
-    QWidget *pMenu,
-            *pMainCalib;
+
+//    QWidget *pMenu,
+//            *pMainCalib;
 
 
-    int startInitProcess();
-    int breakInitProcess();
+//    int startInitProcess();
+//    int breakInitProcess();
 };
 
 #endif // MAINWINDOW_H

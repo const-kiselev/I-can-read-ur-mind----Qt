@@ -18,17 +18,16 @@ public:
     EyeTracker();
     ~EyeTracker();
     //function<int(string)> getHandler();
-
-signals:
-    void uiHandler(const QString&);
-public slots:
-    int signalsHandler(const QString&);
-private:
     int init();
     int calibrate();
     int startTrackingAsinc();
-    void gaze_data(TobiiResearchEyeTracker*);
+signals:
+    void sendSignal(const QString&);
+    void finished();
+public slots:
+private:
 
+    void gaze_data(TobiiResearchEyeTracker*);
 
     TobiiResearchEyeTracker* eye_tracker;
     TobiiResearchStatus status;

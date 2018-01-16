@@ -14,7 +14,8 @@ Calibration::Calibration(QWidget *parent) : QWidget(parent)
     // draw the pixmap of circle
     circleStandartPainter = new QPainter;
     makeSprite();
-    connect(this, SIGNAL(sendSignal(QString)), (MainWindow*)parent, SLOT(signalsHandler(QString)));
+    connect(this, SIGNAL(sendSignal(QString)), (MainWindow*)parent,
+            SLOT(signalsHandler(QString)), Qt::QueuedConnection);
 }
 
 void Calibration::makeSprite()
