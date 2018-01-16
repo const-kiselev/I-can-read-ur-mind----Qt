@@ -9,6 +9,7 @@ int main(int argc, char *argv[])
     MainWindow window;
     EyeTracker eyeTracker;
 
+
     QObject::connect(&window, &MainWindow::eyeTrakerHandler, &eyeTracker, &EyeTracker::signalsHandler);
     QObject::connect(&eyeTracker, &EyeTracker::uiHandler,&window, &MainWindow::signalsHandler);
 

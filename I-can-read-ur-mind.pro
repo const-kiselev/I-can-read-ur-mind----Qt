@@ -49,5 +49,8 @@ INCLUDEPATH += $$PWD/3rdparty/tobii_research/include
 DEPENDPATH += $$PWD/3rdparty/tobii_research/include
 
 RESOURCES += \
-    res.qrc \
-    src/resources.qrc
+    res.qrc
+
+STATECHARTS += \
+    src/models.scxml \
+    states.scxml
