@@ -9,12 +9,12 @@ class Menu : public QWidget
     Q_OBJECT
 
 public:
-    explicit Menu(QWidget *parent);
+    explicit Menu(QWidget *parent = 0);
     ~Menu();
 
     void addEyeTrackerActions();
 signals:
-    void sendSignal(const QString&);
+    void sendSignal(const ResponseAnswer_ENUM cmd, const QString JSONdata = "");
 private:
 };
 

@@ -14,8 +14,6 @@ Calibration::Calibration(QWidget *parent) : QWidget(parent)
     // draw the pixmap of circle
     circleStandartPainter = new QPainter;
     makeSprite();
-    connect(this, SIGNAL(sendSignal(QString)), (MainWindow*)parent,
-            SLOT(signalsHandler(QString)), Qt::QueuedConnection);
 }
 
 void Calibration::makeSprite()
@@ -43,54 +41,7 @@ void Calibration::viewStartButtonWidget()
     pvbxLayout->addWidget(pcmd1);
     stLayout->addWidget(pcmd1);
     stLayout->setCurrentWidget(pcmd1);
-    connect(pcmd1, &QPushButton::clicked, this,[=](){ openCalibrationWidget();
-        QTimer::singleShot(1000, this, [=](){emit sendSignal(MENU_START_CALIBRATION);});
-                                                    });
-}
-
-void Calibration::testMoveWindow()
-{
-    QWidget *testMoveWin = new QWidget;
-    QPushButton *pcmd1 = new QPushButton("Начать калибровку");
-    QPushButton *pcmd2 = new QPushButton("Loading page...");
-    QLabel *plblX = new QLabel("X value:");
-    QLabel *plblY = new QLabel("Y value:");
-    QLabel *plblTime = new QLabel("Time:");
-    QLineEdit *ptxtEditX = new QLineEdit;
-    QLineEdit *ptxtEditY = new QLineEdit;
-    QLineEdit *ptxtEditTime = new QLineEdit;
-    QVBoxLayout *pvbxLayout = new QVBoxLayout();
-    pvbxLayout->addWidget(plblX);
-    pvbxLayout->addWidget(ptxtEditX);
-    pvbxLayout->addWidget(plblY);
-    pvbxLayout->addWidget(ptxtEditY);
-    pvbxLayout->addWidget(plblTime);
-    pvbxLayout->addWidget(ptxtEditTime);
-    pvbxLayout->addWidget(pcmd1);
-    pvbxLayout->addWidget(pcmd2);
-    testMoveWin->setLayout(pvbxLayout);
-    testMoveWin->show();
-    connect(pcmd1, &QPushButton::clicked, this,
-            [=](){this->moveTo(ptxtEditX->text().toDouble(), ptxtEditY->text().toDouble(), ptxtEditTime->text().toInt());});
-    connect(pcmd2, &QPushButton::clicked, this, &Calibration::loading);
-}
-
-void Calibration::loading()
-{
-    QWidget* tmpWid = new QWidget;
-    QMovie *movie = new QMovie(":/img/spinner");
-    QVBoxLayout *pvbx = new QVBoxLayout;
-    QLabel *processLabel = new QLabel;
-    processLabel->setMovie(movie);
-     movie->start();
-     pvbx->addWidget(processLabel);
-     pvbx->addWidget(new QLabel("<CENTER>Обработка данных...</CENTER>"));
-     pvbx->setAlignment(Qt::AlignCenter);
-     tmpWid->setLayout(pvbx);
-    stLayout->addWidget(tmpWid);
-    calibWidgetOpen = false;
-    stLayout->setCurrentWidget(tmpWid);
-
+    connect(pcmd1, &QPushButton::clicked, this,[=](){ openCalibrationWidget();});
 }
 
 void Calibration::openCalibrationWidget()
@@ -100,19 +51,14 @@ void Calibration::openCalibrationWidget()
     stLayout->setCurrentWidget(tmpOne);
     calibWidgetOpen = true;
     setPos(QPointF(-circleRect.width(), height()));
-    if(NO_ET)
-    {
-        testMoveWindow();
-        return;
-    }
     update();
-
+    emit sendSignal(MENU_START_CALIBRATION);
+    qDebug() << "after sendSignal(MENU_START_CALIBRATION);";
 }
 
 
 void Calibration::moveTo(double inX, double inY, int msTime)
 {
-    qDebug() << "I'm in moveTo()";
     propertyAnimation = new QPropertyAnimation(this, "pos");
     propertyAnimation->setDuration(msTime);
     propertyAnimation->setStartValue(QPointF(circleRect.x(), circleRect.y()));
@@ -123,7 +69,6 @@ void Calibration::moveTo(double inX, double inY, int msTime)
 
 void Calibration::paintEvent(QPaintEvent *)
 {
-    qDebug() << "Try to print";
     if (!calibWidgetOpen) return;
     circleStandartPainter->begin(this); // todo: change the logic of circleRect var!!!!
     circleStandartPainter->drawPixmap(circleRect.x(), circleRect.y(), 30, 30,*circlePixmap);

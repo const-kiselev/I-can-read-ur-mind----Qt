@@ -11,9 +11,9 @@ public:
     explicit Controller(QObject *parent = nullptr);
 
 signals:
-    void modelHandler(const QString&);
+    void modelHandler(const ResponseAnswer_ENUM cmd, const QString JSONdata = "");
 public slots:
-    void handler(const QString &inString);
+    void handler(const ResponseAnswer_ENUM cmd, const QString JSONdata = "");
 };
 
 #endif // CONTROLLER_H

@@ -14,12 +14,12 @@ class View : public QObject
     Q_OBJECT
 public:
     explicit View(QObject *parent = nullptr);
-    int init();
+    void init();
     void mainWindowInit();
 signals:
-    void controllerHandler(const QString&);
+    void controllerHandler(const ResponseAnswer_ENUM cmd, const QString JSONdata = "");
 public slots:
-    void handler(const QString &inString);
+    void handler(const ResponseAnswer_ENUM cmd, const QString JSONdata = "");
 private:
     MainWindow *_mainWindow;
 

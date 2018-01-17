@@ -11,13 +11,12 @@ int main(int argc, char *argv[])
     Model _model;
     Controller _controller;
 
-    QObject::connect(&_model, SIGNAL(viewHandler(const QString&)),
-                                   &_view, SLOT(handler(const QString&)));
-    QObject::connect(&_view, SIGNAL(viewHandler(const QString&)),
-                                   &_controller, SLOT(handler(const QString&)));
-    QObject::connect(&_controller, SIGNAL(viewHandler(const QString&)),
-                                   &_model, SLOT(handler(const QString&)));
-
+    QObject::connect(&_model, SIGNAL(viewHandler(const ResponseAnswer_ENUM, const QString)),
+                                   &_view, SLOT(handler(const ResponseAnswer_ENUM, const QString)));
+    QObject::connect(&_view, SIGNAL(controllerHandler(const ResponseAnswer_ENUM, const QString)),
+                                   &_controller, SLOT(handler(const ResponseAnswer_ENUM, const QString)));
+    QObject::connect(&_controller, SIGNAL(modelHandler(const ResponseAnswer_ENUM, const QString)),
+                                   &_model, SLOT(handler(const ResponseAnswer_ENUM, const QString)));
     _view.init();
 
     return a.exec();

@@ -23,7 +23,7 @@ public:
     }
     void loading();
 signals:
-    void sendSignal(const QString&);
+    void sendSignal(const ResponseAnswer_ENUM cmd, const QString JSONdata = "");
 protected:
     void paintEvent(QPaintEvent *);
 private:
@@ -40,7 +40,6 @@ private:
 
     void makeSprite();
     void viewStartButtonWidget();
-    void testMoveWindow();
     void openCalibrationWidget();
 
 

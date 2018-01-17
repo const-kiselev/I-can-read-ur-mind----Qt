@@ -2,43 +2,76 @@
 
 View::View(QObject *parent) : QObject(parent)
 {
-    connect(_menu, SIGNAL(sendSignal(const QString&)),
-            this, SLOT(handler(const QString&)));
 
-    mainWindow = new MainWindow;
-    mainWindow->init();
-    mainWindow->show();
+
+
+
     // ADD resize!!!!
     // FOR macOS:
     //QTimer::singleShot(1000, &window, SLOT(showFullScreen()));
 }
 
-int View::init()
+void View::init()
 {
     _mainWindow = new MainWindow;
+    connect(_mainWindow, SIGNAL(sendSignal(const ResponseAnswer_ENUM, const QString)),
+            this, SLOT(handler(const ResponseAnswer_ENUM, const QString)));
+    _mainWindow->init();
+    _mainWindow->show();
     _menu = new Menu;
+    connect(_menu, SIGNAL(sendSignal(const ResponseAnswer_ENUM, const QString)),
+            this, SLOT(handler(const ResponseAnswer_ENUM, const QString)));
+    emit controllerHandler(VIEW_INIT_COMRLETED);
 }
 
-void View::handler(const QString &inString)
+void View::handler(const ResponseAnswer_ENUM cmd, const QString JSONdata)
 {
-    qDebug() << this->objectName() << " handler(): input = " << inString;
-
-    if(inString == EYE_TRACKER_SUCESSFULL_INIT){
+    qDebug() <<"View::handler: input = "
+             << cmd << " " << JSONdata;
+    QJsonDocument doc;
+    QJsonObject json;
+    if(JSONdata!=""){
+        doc = QJsonDocument::fromJson(JSONdata.toUtf8());
+        json = doc.object();
+        qDebug() << json["x"].toDouble() << " " << json["y"].toDouble();
+    }
+    switch (cmd) {
+    case EYE_TRACKER_SUCESSFULL_INIT:
         _menu->addEyeTrackerActions();
         _mainWindow->addAndShowInViewStack(_menu);
-    }
-    else if(inString == CONTROLLER_ALL_GADGETS_SUCESSFULL_INITED){
+        break;
+    case CONTROLLER_ALL_GADGETS_SUCESSFULL_INITED:
         // todo!!!!
-    }
-    else if(inString == MENU_OPEN_EYE_TRACKER_CALIBRATION_WIDGET){
+        break;
+    case MENU_OPEN_EYE_TRACKER_CALIBRATION_WIDGET:
         _eyeTrackerCalibrationWidget = new Calibration;
+        connect(_eyeTrackerCalibrationWidget, SIGNAL(sendSignal(const ResponseAnswer_ENUM, const QString)),
+                this, SLOT(handler(const ResponseAnswer_ENUM, const QString)));
         _mainWindow->addAndShowInViewStack(_eyeTrackerCalibrationWidget);
-    }
-    else if(inString == VIEW_CALIBRATION_WIDGET_READY){
-        controllerHandler(VIEW_CALIBRATION_WIDGET_READY);
-    }
-    else if(inString.mid(0,3)==EYE_TRACKER_POINT_TO_CALIBRATE){
+        break;
+    case VIEW_CALIBRATION_WIDGET_READY:
+        emit controllerHandler(VIEW_CALIBRATION_WIDGET_READY);
+        break;
+    case MENU_START_CALIBRATION:
+        emit controllerHandler(VIEW_CALIBRATION_WIDGET_READY);
+        break;
+    case EYE_TRACKER_POINT_TO_CALIBRATE:
+        _eyeTrackerCalibrationWidget->moveTo(json["x"].toDouble(), json["y"].toDouble(), json["time"].toInt());
+        break;
+    case EYE_TRACKER_COMPUTING_AND_APPLYING_CALIBRATION:
+        _mainWindow->showLoadingWidget();
+        break;
+    case EYE_TRACKER_COMPUTING_AND_APPLYING_CALIBRATION_COMPLETED:
+        _mainWindow->closeLoadingWidget();
+        break;
+    case EYE_TRACKER_LEAVE_CALIBRATION_MODE:
+        _mainWindow->showWidgetFromStack(_menu);
+        delete _eyeTrackerCalibrationWidget;
+        _eyeTrackerCalibrationWidget = nullptr;
 
+        break;
+    default:
+        break;
     }
 
 }

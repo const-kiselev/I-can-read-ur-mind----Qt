@@ -8,7 +8,6 @@
 #include <tobii_research_eyetracker.h>
 #include <tobii_research_streams.h>
 #include "src/additional_header.h"
-#include <QThread>
 
 
 class EyeTracker: public QObject
@@ -22,8 +21,7 @@ public:
     int calibrate();
     int startTrackingAsinc();
 signals:
-    void sendSignal(const QString&);
-    void finished();
+    void sendSignal(const ResponseAnswer_ENUM cmd, const QString JSONdata = "");
 public slots:
 private:
 

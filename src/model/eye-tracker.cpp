@@ -41,7 +41,7 @@ int EyeTracker::calibrate()
     QJsonObject jsonPoint;
     jsonPoint["x"]=0.0f;
     jsonPoint["y"]=0.0f;
-    jsonPoint["time"] = 4000;
+    jsonPoint["time"] = 1000;
 
     if (NO_ET) {
         emit sendSignal(EYE_TRACKER_SUCESSFULL_CALIBRATION_START);
@@ -49,12 +49,17 @@ int EyeTracker::calibrate()
         TobiiResearchNormalizedPoint2D points_to_calibrate[NUM_OF_POINTS] = \
         { {0.5f, 0.5f}, { 0.6f, 0.6f }, { 0.6f, 0.4f }, { 0.4f, 0.6f }, { 0.4f, 0.4f }, { 0.05f, 0.05f }, { 0.05f, 0.95f }, { 0.95f, 0.05f }, { 0.95f, 0.95f }};
         size_t i = 0;
-        for (; i < NUM_OF_POINTS; i++) {
+        for (; i < 4; i++) {
             TobiiResearchNormalizedPoint2D* point = &points_to_calibrate[i];
             jsonPoint["x"]=point->x;
             jsonPoint["y"]=point->y;
-            emit sendSignal(EYE_TRACKER_POINT_TO_CALIBRATE+QJsonDocument(jsonPoint).toJson(QJsonDocument::Compact));
+            emit sendSignal(EYE_TRACKER_POINT_TO_CALIBRATE, QString(QJsonDocument(jsonPoint).toJson(QJsonDocument::Compact)));
+            QThread::msleep(jsonPoint["time"].toInt()+500);
         }
+        emit sendSignal(EYE_TRACKER_COMPUTING_AND_APPLYING_CALIBRATION);
+        QThread::msleep(5000);
+        emit sendSignal(EYE_TRACKER_COMPUTING_AND_APPLYING_CALIBRATION_COMPLETED);
+        emit sendSignal(EYE_TRACKER_LEAVE_CALIBRATION_MODE);
         return 0;
     }
 
@@ -76,7 +81,7 @@ int EyeTracker::calibrate()
             TobiiResearchNormalizedPoint2D* point = &points_to_calibrate[i];
             jsonPoint["x"]=point->x;
             jsonPoint["y"]=point->y;
-            emit sendSignal(EYE_TRACKER_POINT_TO_CALIBRATE+QJsonDocument(jsonPoint).toJson(QJsonDocument::Compact));
+            emit sendSignal(EYE_TRACKER_POINT_TO_CALIBRATE, QJsonDocument(jsonPoint).toJson(QJsonDocument::Compact));
             QThread::msleep(jsonPoint["time"].toInt()+500);
 
             qDebug()<< "Collecting data at" << point->x<< " "<<point->y;
@@ -91,6 +96,7 @@ int EyeTracker::calibrate()
 
         TobiiResearchCalibrationResult* calibration_result = NULL;
         status = tobii_research_screen_based_calibration_compute_and_apply(eye_tracker, &calibration_result);
+        emit sendSignal(EYE_TRACKER_COMPUTING_AND_APPLYING_CALIBRATION_COMPLETED);
         if (status == TOBII_RESEARCH_STATUS_OK && calibration_result->status == TOBII_RESEARCH_CALIBRATION_SUCCESS) {
             qDebug() << "Compute and apply returned "<<status<<" and collected at "<<calibration_result->calibration_point_count<<" points.\n";
         }
@@ -124,7 +130,6 @@ int EyeTracker::calibrate()
     //if(status);
     qDebug() << QString("Left calibration mode.\n");
     emit sendSignal(EYE_TRACKER_LEAVE_CALIBRATION_MODE);
-    emit finished();
     return 0;
 }
 

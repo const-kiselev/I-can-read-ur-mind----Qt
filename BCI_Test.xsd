@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2011 rel. 2 (http://www.altova.com) by TeaM DJiNN (TeaM DJiNN) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="BCI_Test">
+		<xs:annotation>
+			<xs:documentation>Content of the test</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="ID">
+		<xs:annotation>
+			<xs:documentation>from the system. Algorithm of data handling depends on it</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="Title"/>
+	<xs:element name="Description"/>
+	<xs:element name="Intro">
+		<xs:annotation>
+			<xs:documentation>Short description</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="ProblemOrder">
+		<xs:annotation>
+			<xs:documentation>Open means that user can choose problems from test menu</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="Information"/>
+	<xs:element name="Problem">
+		<xs:complexType>
+			<xs:attribute name="Skip" type="xs:boolean" default="true"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Task"/>
+	<xs:element name="Answer" type="xs:string" default="test"/>
+	<xs:element name="ROI"/>
+</xs:schema>

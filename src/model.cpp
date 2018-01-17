@@ -1,32 +1,45 @@
 #include "model.h"
 
+
+
 Model::Model(QObject *parent) : QObject(parent)
 {
-    connect(_eyeTracker, SIGNAL(finished()), &_thread, SLOT(quit()));
 }
 
-void Model::handler(const QString &inString)
+Model::~Model()
 {
-    if(inString == MODEL_INIT_ALL_GADGETS){
+}
+
+void Model::handler(const ResponseAnswer_ENUM cmd, const QString&JSONdata)
+{
+    qDebug() << "Model::handler recieved: "<< cmd;
+    switch (cmd) {
+    case MODEL_INIT_ALL_GADGETS:
         _eyeTracker = new EyeTracker;
-        if(_eyeTracker->init())
-            emit viewHandler(MENU_ADD_EYE_TRACKER_ACTIONS);
+        qRegisterMetaType<ResponseAnswer_ENUM>();
+        connect(_eyeTracker, SIGNAL(sendSignal(const ResponseAnswer_ENUM, const QString)),
+                this, SLOT(handler(const ResponseAnswer_ENUM, const QString)),
+                Qt::QueuedConnection);
+        if(!_eyeTracker->init())
+            emit viewHandler(EYE_TRACKER_SUCESSFULL_INIT);
+        break;
+    case EYE_TRACKER_START_CALIBRATION:
+        QtConcurrent::run(_eyeTracker, &EyeTracker::calibrate);
+        break;
+    case EYE_TRACKER_POINT_TO_CALIBRATE:
+        emit viewHandler(EYE_TRACKER_POINT_TO_CALIBRATE, JSONdata);
+        break;
+    case EYE_TRACKER_LEAVE_CALIBRATION_MODE:
+        emit viewHandler(EYE_TRACKER_LEAVE_CALIBRATION_MODE);
+        break;
+    case EYE_TRACKER_COMPUTING_AND_APPLYING_CALIBRATION:
+        emit viewHandler(EYE_TRACKER_COMPUTING_AND_APPLYING_CALIBRATION);
+        break;
+    case EYE_TRACKER_COMPUTING_AND_APPLYING_CALIBRATION_COMPLETED:
+        emit viewHandler(EYE_TRACKER_COMPUTING_AND_APPLYING_CALIBRATION_COMPLETED);
+        break;
+    default:
+        break;
     }
-    else if(inString == VIEW_CALIBRATION_WIDGET_READY){
-        _eyeTracker->moveToThread(&_modelThread);
-        _modelThread.start();
-        _eyeTracker->calibrate();
-    }
-    else if(inString.mid(0,3)==EYE_TRACKER_POINT_TO_CALIBRATE){
-        emit viewHandler(inString);
-        QJsonDocument doc(QJsonDocument::fromJson(inSignal.mid(3,inSignal.length()-3).toUtf8()));
-        // Get JSON object
-        QJsonObject json = doc.object();
-        qDebug() << inSignal.mid(2,inSignal.length()-3);
-        qDebug() << json;
-        // Access properties
-        qDebug() << json["x"].toDouble() << " " << json["y"].toDouble();
-        moveTo(json["x"].toDouble(), json["y"].toDouble(), json["time"].toInt());
-    }
-    }
+
 }

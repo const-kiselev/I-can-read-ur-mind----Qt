@@ -2,34 +2,23 @@
 #define MODEL_H
 
 #include <QObject>
-#include <QThread>
+#include <QtConcurrent/QtConcurrent>
 #include "src/additional_header.h"
 #include "src/model/eye-tracker.h"
 
 class Model : public QObject
 {
     Q_OBJECT
+
 public:
     explicit Model(QObject *parent = nullptr);
-
+    ~Model();
 signals:
-    void viewHandler(const QString&);
+    void viewHandler(const ResponseAnswer_ENUM cmd, const QString&JSONdata = "");
 public slots:
-    void handler(const QString &inString);
+    void handler(const ResponseAnswer_ENUM cmd, const QString&JSONdata = "");
 private:
     EyeTracker *_eyeTracker;
-    ModelThread _modelThread;
 };
-
-class ModelThread: QThread
-{
-    Q_OBJECT
-public:
-    ModelTrread(){}
-    void run()
-    {
-        exec();
-    }
-}
 
 #endif // MODEL_H

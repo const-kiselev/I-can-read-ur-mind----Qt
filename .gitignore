@@ -3,7 +3,7 @@
 
 # User-specific files
 *.suo
-##*.user
+*.user
 *.userosscache
 *.sln.docstates
 
@@ -263,3 +263,6 @@ __pycache__/
 
 # macOS hidden files
 *.DS_Store
+
+[Mm]akefile*
+*.[Qq]make*
