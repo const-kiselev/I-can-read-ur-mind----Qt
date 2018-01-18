@@ -22,6 +22,8 @@ int MainWindow::addAndShowInViewStack(QWidget *inWidget)
 {
     int res = stackedWidget->addWidget(inWidget);
     stackedWidget->setCurrentIndex(res);
+    if(loadingWidgetIndexInStack!=-1) // автоматическое скрытие виджета с загрузкой
+        closeLoadingWidget();
     return res;
 }
 

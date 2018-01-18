@@ -32,7 +32,8 @@ SOURCES += \
     src/view/calibration.cpp \
     src/model.cpp \
     src/view.cpp \
-    src/controller.cpp
+    src/controller.cpp \
+    src/model/tests-controller.cpp
 
 HEADERS += \
     src/view/main-window.h \
@@ -42,7 +43,8 @@ HEADERS += \
     src/view/calibration.h \
     src/model.h \
     src/view.h \
-    src/controller.h
+    src/controller.h \
+    src/model/tests-controller.h
 
 #FORMS +=
 

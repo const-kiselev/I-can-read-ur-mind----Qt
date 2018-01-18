@@ -53,7 +53,7 @@ int EyeTracker::calibrate()
             TobiiResearchNormalizedPoint2D* point = &points_to_calibrate[i];
             jsonPoint["x"]=point->x;
             jsonPoint["y"]=point->y;
-            emit sendSignal(EYE_TRACKER_POINT_TO_CALIBRATE, QString(QJsonDocument(jsonPoint).toJson(QJsonDocument::Compact)));
+            emit sendSignal(EYE_TRACKER_POINT_TO_CALIBRATE, JSONtoStr(jsonPoint)); // QString(QJsonDocument(jsonPoint).toJson(QJsonDocument::Compact))
             QThread::msleep(jsonPoint["time"].toInt()+500);
         }
         emit sendSignal(EYE_TRACKER_COMPUTING_AND_APPLYING_CALIBRATION);
