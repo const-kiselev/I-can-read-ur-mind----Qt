@@ -57,7 +57,7 @@ void Model::handler(const ResponseAnswer_ENUM cmd, const QString&JSONdata)
     case TESTS_CONTROLLER_LIST_WITH_TESTS_WAS_UPD:
         // todo
         break;
-    case CONTROLLER_START_TEST_d:
+    case MODEL_START_TEST_d:
     {
 
         break;
@@ -75,7 +75,7 @@ void Model::init()
         _testsController = nullptr;
         emit viewHandler(ERROR_MODEL_INIT_TESTS_CONTROLLER_INIT);
         qDebug() << "ERROR_MODEL_INIT_TESTS_CONTROLLER_INIT";
-        break;
+        return;
     }
     connect(_testsController, SIGNAL(sendSignal(const ResponseAnswer_ENUM, const QString)),
             this, SLOT(handler(const ResponseAnswer_ENUM, const QString)));
@@ -83,7 +83,7 @@ void Model::init()
     {
         emit viewHandler(EYE_TRACKER_SUCESSFULL_INIT);
         if(_testsController->addBCI(BCI_TYPE_EYE_TRACKER)){ // если хотя бы один тест был найден, то выполняем
-            QList tmp = _testsController->getListOfTests(); // запрашиваем список с доступными тестами
+            QList<ViewTestElement> tmp = _testsController->getListOfTests(); // запрашиваем список с доступными тестами
             foreach (ViewTestElement tmpElement, tmp) { // проходимся по всем тестам списка
                 emit viewHandler(MENU_ADD_TEST_d, tmpElement.converToJSONstr()); // отправляем меню данные о тесте
             }

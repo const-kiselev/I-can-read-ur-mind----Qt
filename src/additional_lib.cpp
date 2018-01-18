@@ -1,10 +1,13 @@
 #include "additional_header.h"
 
-void JSON_read() {};
-void JSON_create() {};
-//pt::ptree* JSON_representation(string strData) {
-//	stringstream tmpSS(strData);
-//	pt::ptree *json_var = new pt::ptree;
-//	boost::property_tree::read_json(tmpSS, *json_var);
-//	return json_var;
-//}
+QString JSONtoStr(QJsonObject inJson)
+{
+    return QString(QJsonDocument(inJson).toJson(QJsonDocument::Compact));
+}
+QJsonObject JSON_fromStr(QString inStr){
+    QJsonDocument doc;
+    QJsonObject json;
+    doc = QJsonDocument::fromJson(inStr.toUtf8());
+    json = doc.object();
+    return json;
+}

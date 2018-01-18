@@ -2,10 +2,6 @@
 
 View::View(QObject *parent) : QObject(parent)
 {
-
-
-
-
     // ADD resize!!!!
     // FOR macOS:
     //QTimer::singleShot(1000, &window, SLOT(showFullScreen()));

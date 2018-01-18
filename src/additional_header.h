@@ -10,17 +10,8 @@
 #define NO_ET true
 
 
-QString JSONtoStr(QJsonObject inJson)
-{
-    return QString(QJsonDocument(inJson).toJson(QJsonDocument::Compact))
-}
-QJsonObject JSON_fromStr(QString inStr){
-    QJsonDocument doc;
-    QJsonObject json;
-    doc = QJsonDocument::fromJson(inStr.toUtf8());
-    json = doc.object();
-    return json;
-}
+QString JSONtoStr(QJsonObject inJson);
+QJsonObject JSON_fromStr(QString inStr);
 
 typedef enum {
     OTHER_SIGNAL_WITH_DATA,
@@ -44,7 +35,6 @@ typedef enum {
 
     CONTROLLER_ALL_GADGETS_SUCESSFULL_INITED,
     CONTROLLER_CALIBRATION_WIDGET_CLICKED_START,
-    CONTROLLER_START_TEST_d,
 
     VIEW_CALIBRATION_WIDGET_READY,
     VIEW_INIT_COMRLETED,
@@ -52,6 +42,7 @@ typedef enum {
     MODEL_INIT,
     MODEL_INIT_ALL_GADGETS,
     MODEL_INIT_COMRLETED,
+    MODEL_START_TEST_d,
 
     TESTS_CONTROLLER_LIST_WITH_TESTS_WAS_UPD,
 

@@ -20,9 +20,9 @@ void Controller::handler(const ResponseAnswer_ENUM cmd, const QString JSONdata)
         emit modelHandler(EYE_TRACKER_START_CALIBRATION);
         break;
     }
-    case CONTROLLER_START_TEST_d:
+    case MODEL_START_TEST_d:
     {
-        emit modelHandler(CONTROLLER_START_TEST_d, JSONdata);
+        emit modelHandler(MODEL_START_TEST_d, JSONdata);
         break;
     }
     default:
