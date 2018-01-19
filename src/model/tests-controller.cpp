@@ -3,7 +3,7 @@
 TestsController::TestsController(QObject *parent) : QObject(parent)
 {
     activeTestID = -1;
-    loadPageID = -1;
+    loadedPageID = -1;
 }
 
 int TestsController::init()
@@ -17,16 +17,32 @@ int TestsController::addBCI(BCI_TYPE in_bciType)
     return findTests(in_bciType);
 }
 
-int TestsController::loadTest(int ID) // todo: посмотреть
+ResponseAnswer_ENUM TestsController::loadTest(int ID) // todo: посмотреть
 {
+    if(activeTestID!=-1)
+        return MODEL_TESTS_CONTROLLER_THERE_IS_ACTIVE_TEST;
+    if(_testsList.length()<=ID || ID<0)
+        return MODEL_TESTS_CONTROLLER_NO_SUCH_TEST_ID;
     connect(_testsList.at(ID)._testModel, SIGNAL(loaded()), this, SLOT(testLoaded()));
-    _testsList.at(ID)._testModel->loadingForShow();
-    return 0;
+    if (_testsList.at(ID)._testModel->load()) // загрузка данных ROIs для использования в потоковом анализе данных айТрекера
+        return MODEL_TESTS_CONTROLLER_TEST_NOT_LOADED;
+    loadedPageID = ID;
+    return MODEL_TESTS_CONTROLLER_LOADED;
 }
 
-QString *TestsController::getTestLinkForView()
+ResponseAnswer_ENUM TestsController::startTest()
 {
-    return new QString("HELLO");
+    if(activeTestID!=-1)
+        return MODEL_TESTS_CONTROLLER_THERE_IS_ACTIVE_TEST;
+    if(loadedPageID=-1)
+        return MODEL_TESTS_CONTROLLER_NO_LOADED_TEST;
+    activeTestID = loadedPageID;
+    return MODEL_TESTS_CONTROLLER_SUCCESS_TEST_START;
+}
+
+QString TestsController::getTestXMLfileLink()
+{
+    return QString("demo");
 }
 
 QList<ViewTestElement> TestsController::getListOfTests()
@@ -58,118 +74,21 @@ int TestsController::findTests(BCI_TYPE in_bciType)
 
 ////////////////////////////////////////////////
 
-TestModel::TestModel(QObject *parent)
+TestModel::TestModel(QObject *parent): QObject(parent)
 {
     _demo = false;
 }
 
 
-void TestModel::loadingForShow()
+ResponseAnswer_ENUM TestModel::load()
 {
     if(_demo)
-        demoLoadingForShow();
+        demoLoadROIs(); // временная загрузка теста
+    return MODEL_TESTS_CONTROLLER_LOADED;
 
 }
 
-void TestModel::demoLoadingForShow()
+void TestModel::demoLoadROIs()
 {
-    _testView = new TestRepresinatationData;
-    ROI_VectorElement tmpROI;
-    tmpROI.ID = _testView->ROIsVector.length();
-    tmpROI.type = rect;
-    tmpROI.points.push_back(QPoint(140+318,14+384));
-    tmpROI.position = QPoint(140,14);
-    tmpROI.content = "Q1. This program will indicate whether an input number is a perfect number (a positive integer that is equal to the sum of its proper positive divisors, e.g., 6 is a perfect number because 6=1+2+3). Please find three possible bigs in it.";
-    tmpROI.style = "";
-    _testView->ROIsVector.push_back(tmpROI);
 
-    tmpROI.ID = _testView->ROIsVector.length();
-    tmpROI.type = rect;
-    tmpROI.points.push_back(QPoint(475+298,14+48));
-    tmpROI.position = QPoint(475,14);
-    tmpROI.content = "#include <stdio.h>";
-    tmpROI.style = "";
-    _testView->ROIsVector.push_back(tmpROI);
-
-    tmpROI.ID = _testView->ROIsVector.length();
-    tmpROI.type = rect;
-    tmpROI.points.push_back(QPoint(466+197,69+50));
-    tmpROI.position = QPoint(466,69);
-    tmpROI.content = "int main(){";
-    tmpROI.style = "";
-    _testView->ROIsVector.push_back(tmpROI);
-
-    tmpROI.ID = _testView->ROIsVector.length();
-    tmpROI.type = rect;
-    tmpROI.points.push_back(QPoint(502+319,125+48));
-    tmpROI.position = QPoint(502,125);
-    tmpROI.content = "int n, i=1, sum=0;";
-    tmpROI.style = "";
-    _testView->ROIsVector.push_back(tmpROI);
-
-    tmpROI.ID = _testView->ROIsVector.length();
-    tmpROI.type = rect;
-    tmpROI.points.push_back(QPoint(502+437,182+103));
-    tmpROI.position = QPoint(502,182);
-    tmpROI.content = "printf(\"Enter a number: \"); scanf(\"%d\",n);";
-    tmpROI.style = "";
-    _testView->ROIsVector.push_back(tmpROI);
-
-    tmpROI.ID = _testView->ROIsVector.length();
-    tmpROI.type = rect;
-    tmpROI.points.push_back(QPoint(502+214,293+49));
-    tmpROI.position = QPoint(502,293);
-    tmpROI.content = "while(i<=n){";
-    tmpROI.style = "";
-    _testView->ROIsVector.push_back(tmpROI);
-
-    tmpROI.ID = _testView->ROIsVector.length();
-    tmpROI.type = rect;
-    tmpROI.points.push_back(QPoint(536+211,348+50));
-    tmpROI.position = QPoint(536,348);
-    tmpROI.content = "if(i%n==0){";
-    tmpROI.style = "";
-    _testView->ROIsVector.push_back(tmpROI);
-
-    tmpROI.ID = _testView->ROIsVector.length();
-    tmpROI.type = rect;
-    tmpROI.points.push_back(QPoint(595+236,403+106));
-    tmpROI.position = QPoint(595,403);
-    tmpROI.content = "sum=sum+i;i++;";
-    tmpROI.style = "";
-    _testView->ROIsVector.push_back(tmpROI);
-
-    tmpROI.ID = _testView->ROIsVector.length();
-    tmpROI.type = rect;
-    tmpROI.NOTforEyeTrackerFixation = true;
-    tmpROI.points.push_back(QPoint(497+65,515+104));
-    tmpROI.position = QPoint(497,515);
-    tmpROI.content = "}}";
-    tmpROI.style = "";
-    _testView->ROIsVector.push_back(tmpROI);
-
-    tmpROI.ID = _testView->ROIsVector.length();
-    tmpROI.type = rect;
-    tmpROI.points.push_back(QPoint(497+807,625+103));
-    tmpROI.position = QPoint(497,625);
-    tmpROI.content = "if(sum==n)   printf(\“%d is a perfect number\”, i); else   print(\“%d is not a perfect number\”);";
-    tmpROI.style = "";
-    _testView->ROIsVector.push_back(tmpROI);
-
-    tmpROI.ID = _testView->ROIsVector.length();
-    tmpROI.type = rect;
-    tmpROI.points.push_back(QPoint(497+807,625+103));
-    tmpROI.position = QPoint(497,625);
-    tmpROI.content = "return 0;";
-    tmpROI.style = "";
-    _testView->ROIsVector.push_back(tmpROI);
-
-    tmpROI.ID = _testView->ROIsVector.length();
-    tmpROI.type = rect;
-    tmpROI.NOTforEyeTrackerFixation = true;
-    tmpROI.points.push_back(QPoint(471+27,792+47));
-    tmpROI.position = QPoint(471,792);
-    tmpROI.content = "}";
-    tmpROI.style = "";
-    _testView->ROIsVector.push_back(tmpROI);
 }

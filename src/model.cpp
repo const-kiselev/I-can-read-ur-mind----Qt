@@ -13,7 +13,15 @@ Model::~Model()
 
 void Model::handler(const ResponseAnswer_ENUM cmd, const QString&JSONdata)
 {
-    qDebug() << "Model::handler recieved: "<< cmd;
+    qDebug() << "Model::handler recieved: "
+             << cmd << " " << JSONdata;
+    QJsonDocument doc;
+    QJsonObject json;
+    ResponseAnswer_ENUM resp;
+    if(JSONdata!=""){
+        doc = QJsonDocument::fromJson(JSONdata.toUtf8());
+        json = doc.object();
+    }
     switch (cmd) {
     case MODEL_INIT_ALL_GADGETS:
     {
@@ -59,7 +67,14 @@ void Model::handler(const ResponseAnswer_ENUM cmd, const QString&JSONdata)
         break;
     case MODEL_START_TEST_d:
     {
-
+        resp = _testsController->loadTest(json["ID"].toInt());
+        emit controllerHandler(resp);
+        if(resp != MODEL_TESTS_CONTROLLER_LOADED)
+            break;
+        QString tmpRespStrT;
+        QJsonObject respJson;
+        respJson["testPath"] = _testsController->getTestXMLfileLink();
+        emit controllerHandler(MODEL__TEST_PATH_d, JSONtoStr(respJson));
         break;
     }
     default:

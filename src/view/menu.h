@@ -13,6 +13,7 @@ public:
     ~Menu();
 
     void addEyeTrackerActions();
+    void addItem(QString title, ResponseAnswer_ENUM respSignal, QString JsonResInStr = "");
 signals:
     void sendSignal(const ResponseAnswer_ENUM cmd, const QString JSONdata = "");
 private:

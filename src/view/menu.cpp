@@ -23,6 +23,15 @@ void Menu::addEyeTrackerActions()
     this->setLayout(pvbxLayout);
 
    connect(pcmd1, &QPushButton::clicked, this,
-           [=](){sendSignal(MENU_OPEN_EYE_TRACKER_CALIBRATION_WIDGET); });
+           [=](){emit sendSignal(MENU_OPEN_EYE_TRACKER_CALIBRATION_WIDGET); });
 
+}
+
+void Menu::addItem(QString title, ResponseAnswer_ENUM respSignal, QString JsonResInStr)
+{
+    QPushButton *pcmd1 = new QPushButton(title);
+    layout()->addWidget(pcmd1);
+
+    connect(pcmd1, &QPushButton::clicked, this,
+            [=](){emit sendSignal(respSignal, JsonResInStr); });
 }

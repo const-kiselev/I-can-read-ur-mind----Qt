@@ -8,6 +8,7 @@
 #include "src/view/main-window.h"
 #include "src/view/menu.h"
 #include "src/view/calibration.h"
+#include "src/view/test-view.h"
 
 class View : public QObject
 {
@@ -26,6 +27,7 @@ private:
     //-------- WIDGETs:
     Menu *_menu;
     Calibration *_eyeTrackerCalibrationWidget;
+    TestView *_testView;
 };
 
 #endif // VIEW_H

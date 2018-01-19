@@ -35,7 +35,7 @@ int MainWindow::showWidgetFromStack(QWidget *inWidget)
 
 void MainWindow::closeLoadingWidget()
 {
-    qDebug() << "void MainWindow::closeLoadingWidget()";
+    qDebug() << "MainWindow::closeLoadingWidget()";
     if(loadingWidgetIndexInStack==-1)
         return;
     QWidget *tmpWidget = stackedWidget->widget(loadingWidgetIndexInStack);

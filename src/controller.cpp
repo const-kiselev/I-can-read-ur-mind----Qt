@@ -20,9 +20,22 @@ void Controller::handler(const ResponseAnswer_ENUM cmd, const QString JSONdata)
         emit modelHandler(EYE_TRACKER_START_CALIBRATION);
         break;
     }
-    case MODEL_START_TEST_d:
+    case MENU_OPEN_TEST_d:
     {
         emit modelHandler(MODEL_START_TEST_d, JSONdata);
+        break;
+    }
+    case MODEL_TESTS_CONTROLLER_SUCCESS:
+    case MODEL_TESTS_CONTROLLER_NO_SUCH_TEST_ID:
+    case MODEL_TESTS_CONTROLLER_TEST_NOT_LOADED:
+    case MODEL_TESTS_CONTROLLER_LOADED:
+    case MODEL_TESTS_CONTROLLER_NO_LOADED_TEST:
+    case MODEL_TESTS_CONTROLLER_SUCCESS_TEST_START:
+    case MODEL_TESTS_CONTROLLER_THERE_IS_ACTIVE_TEST:
+        break;
+    case MODEL__TEST_PATH_d:
+    {
+        emit viewHandler(VIEW_TEST_PATH_FOR_LOAD, JSONdata);
         break;
     }
     default:

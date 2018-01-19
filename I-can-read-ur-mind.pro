@@ -33,7 +33,8 @@ SOURCES += \
     src/model.cpp \
     src/view.cpp \
     src/controller.cpp \
-    src/model/tests-controller.cpp
+    src/model/tests-controller.cpp \
+    src/view/test-view.cpp
 
 HEADERS += \
     src/view/main-window.h \
@@ -44,7 +45,8 @@ HEADERS += \
     src/model.h \
     src/view.h \
     src/controller.h \
-    src/model/tests-controller.h
+    src/model/tests-controller.h \
+    src/view/test-view.h
 
 #FORMS +=
 
