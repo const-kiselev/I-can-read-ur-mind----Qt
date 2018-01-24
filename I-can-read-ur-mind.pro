@@ -25,6 +25,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     src/main.cpp \
+    src/view/test-view.cpp \
     src/view/main-window.cpp \
     src/additional_lib.cpp \
     src/model/eye-tracker.cpp \
@@ -33,8 +34,7 @@ SOURCES += \
     src/model.cpp \
     src/view.cpp \
     src/controller.cpp \
-    src/model/tests-controller.cpp \
-    src/view/test-view.cpp
+    src/model/tests-controller.cpp
 
 HEADERS += \
     src/view/main-window.h \

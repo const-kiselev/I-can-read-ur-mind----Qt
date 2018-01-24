@@ -104,17 +104,17 @@ void View::handler(const ResponseAnswer_ENUM cmd, const QString JSONdata)
     }
     case VIEW_TEST_PATH_FOR_LOAD:
     {
-        _testView = new TestView;
-//        resp = _testView->load(json["testPath"].toString());
-//        emit controllerHandler(resp);
-//        if(resp!=VIEW_TEST_VIEW_LOAD_SUCCESS)
-//        {
-//            delete _testView;
-//            _testView = nullptr;
-//            break;
-//        }
-//        _mainWindow->addAndShowInViewStack(_testView);
-//        emit controllerHandler(VIEW_TEST_VIEW_SHOW_SUCCESS);
+        _testView = new TestView();
+        resp = _testView->load(json["testPath"].toString());
+        emit controllerHandler(resp);
+        if(resp!=VIEW_TEST_VIEW_LOAD_SUCCESS)
+        {
+            delete _testView;
+            _testView = nullptr;
+            break;
+        }
+        _mainWindow->addAndShowInViewStack(_testView);
+        emit controllerHandler(VIEW_TEST_VIEW_SHOW_SUCCESS);
         break;
     }
     default:

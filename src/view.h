@@ -10,6 +10,7 @@
 #include "src/view/calibration.h"
 #include "src/view/test-view.h"
 
+
 class View : public QObject
 {
     Q_OBJECT

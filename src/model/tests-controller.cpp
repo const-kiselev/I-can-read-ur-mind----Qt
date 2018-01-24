@@ -24,7 +24,7 @@ ResponseAnswer_ENUM TestsController::loadTest(int ID) // todo: посмотре�
     if(_testsList.length()<=ID || ID<0)
         return MODEL_TESTS_CONTROLLER_NO_SUCH_TEST_ID;
     connect(_testsList.at(ID)._testModel, SIGNAL(loaded()), this, SLOT(testLoaded()));
-    if (_testsList.at(ID)._testModel->load()) // загрузка данных ROIs для использования в потоковом анализе данных айТрекера
+    if (_testsList.at(ID)._testModel->load()!=MODEL_TESTS_CONTROLLER_LOADED) // загрузка данных ROIs для использования в потоковом анализе данных айТрекера
         return MODEL_TESTS_CONTROLLER_TEST_NOT_LOADED;
     loadedPageID = ID;
     return MODEL_TESTS_CONTROLLER_LOADED;

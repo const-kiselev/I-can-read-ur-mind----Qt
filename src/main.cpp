@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
     QObject::connect(&_model, SIGNAL(viewHandler(const ResponseAnswer_ENUM, const QString)),
                                    &_view, SLOT(handler(const ResponseAnswer_ENUM, const QString)));
     QObject::connect(&_model, SIGNAL(controllerHandler(const ResponseAnswer_ENUM, const QString)),
-                                   &_view, SLOT(handler(const ResponseAnswer_ENUM, const QString)));
+                                   &_controller, SLOT(handler(const ResponseAnswer_ENUM, const QString)));
     QObject::connect(&_view, SIGNAL(controllerHandler(const ResponseAnswer_ENUM, const QString)),
                                    &_controller, SLOT(handler(const ResponseAnswer_ENUM, const QString)));
     QObject::connect(&_controller, SIGNAL(modelHandler(const ResponseAnswer_ENUM, const QString)),

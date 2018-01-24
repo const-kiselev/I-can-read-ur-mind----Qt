@@ -5,6 +5,7 @@ EyeTracker::EyeTracker() : QObject(new QObject)
     calibrate_done = false;
     calibrate_need = true;
     eye_tracker = nullptr;
+    tracking_active = false;
 }
 
 EyeTracker::~EyeTracker()
@@ -12,7 +13,6 @@ EyeTracker::~EyeTracker()
     //if(eyeTracker) // Резлизовать!!!
 
 }
-
 
 int EyeTracker::init()
 {
@@ -133,31 +133,58 @@ int EyeTracker::calibrate()
     return 0;
 }
 
-int EyeTracker::startTrackingAsinc()
+int EyeTracker::startTracking()
 {
+    if(!eye_tracker)
+        return EYE_TRACKER_DID_NOT_INIT;
+    if(calibrate_need)
+        return EYE_TRACKER_NEED_CALIBRATE;
+    if(tracking_active)
+        return EYE_TRACKER_BUSY_WITH_TRACKING;
+
+    tracking_active = true;
+
+    status = tobii_research_subscribe_to_gaze_data(eye_tracker, gazeDataCallback, &gaze_data);
+    if (status != TOBII_RESEARCH_STATUS_OK)
+        return EYE_TRACKER_PROBLEM_WITH_TRACKING_START;
+
+    QPointF tmpPoint;
+    while(tracking_active){
+        //gaze_data.left_eye.gaze_point.position_on_display_area.x + gaze_data.right_eye.gaze_point.position_on_display_area.x) / 2;
+        //gaze_data.left_eye.gaze_point.position_on_display_area.y + gaze_data.right_eye.gaze_point.position_on_display_area.y) / 2;
+
+        //boost::this_thread::sleep_for(boost::chrono::milliseconds(360));
+        tmpPoint = getAvrCurrentData();
+        emit sendGazePoint(tmpPoint.x(), tmpPoint.y());
+    }
+
+        return 0;
+}
+
+int EyeTracker::stopTracking()
+{
+    if(!eye_tracker)
+        return EYE_TRACKER_DID_NOT_INIT;
+    if(calibrate_need)
+        return EYE_TRACKER_NEED_CALIBRATE;
+    if(!tracking_active)
+        return EYE_TRACKER_TRACKING_PROCESS_HAVE_NOT_STARTED;
+
+    tracking_active = false;
+    status = tobii_research_unsubscribe_from_gaze_data(eye_tracker, gazeDataCallback);
+    emit sendSignal(EYE_TRACKER_LEFT_TRACKING_PROCESS);
     return 0;
 }
 
-void gaze_data_callback(TobiiResearchGazeData* gaze_data, void* user_data) {
-    memcpy(user_data, gaze_data, sizeof(*gaze_data));
+QPointF EyeTracker::getAvrCurrentData()
+{
+    return QPointF( (lastGazeData.left_eye.gaze_point.position_on_display_area.x +
+                   lastGazeData.right_eye.gaze_point.position_on_display_area.x) / 2,
+                    (lastGazeData.left_eye.gaze_point.position_on_display_area.y +
+                    lastGazeData.right_eye.gaze_point.position_on_display_area.y) / 2);
 }
 
-void EyeTracker::gaze_data(TobiiResearchEyeTracker* inEyetracker) {
-    //pt::ptree tmpPtree;
-    TobiiResearchGazeData gaze_data;
-    TobiiResearchStatus status = tobii_research_subscribe_to_gaze_data(eye_tracker, gaze_data_callback, &gaze_data);
-    if (status != TOBII_RESEARCH_STATUS_OK)
-        return;
-    // Wait while some gaze data is collected.
-
-    for (int i = 0; i < 200; i++) {
-        //tmpPtree.put("x", ((gaze_data.left_eye.gaze_point.position_on_display_area.x + gaze_data.right_eye.gaze_point.position_on_display_area.x) / 2));
-        //tmpPtree.put("y", (gaze_data.left_eye.gaze_point.position_on_display_area.y + gaze_data.right_eye.gaze_point.position_on_display_area.y) / 2);
-        //chrome->makeActionInApp(1, &tmpPtree);
-        //tmpPtree.clear();
-        //boost::this_thread::sleep_for(boost::chrono::milliseconds(360));
-    }
-
-    status = tobii_research_unsubscribe_from_gaze_data(eye_tracker, gaze_data_callback);
-
+void EyeTracker::gazeDataCallback(TobiiResearchGazeData*, void* user_data)
+{
+    memcpy(user_data, gaze_data, sizeof(*gaze_data));
 }

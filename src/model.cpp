@@ -30,6 +30,8 @@ void Model::handler(const ResponseAnswer_ENUM cmd, const QString&JSONdata)
         connect(_eyeTracker, SIGNAL(sendSignal(const ResponseAnswer_ENUM, const QString)),
                 this, SLOT(handler(const ResponseAnswer_ENUM, const QString)),
                 Qt::QueuedConnection);
+        connect(_eyeTracker, SIGNAL(sendGazePoint(double,double)),
+                this, SLOT(gazePoint(double,double)));
         break;
     }
     case MODEL_INIT:
@@ -40,6 +42,7 @@ void Model::handler(const ResponseAnswer_ENUM cmd, const QString&JSONdata)
     }
     case EYE_TRACKER_START_CALIBRATION:
     {
+        // работает с помощью интсрумента управления потоками. То есть, данная функция запускается в другом потоке
         QtConcurrent::run(_eyeTracker, &EyeTracker::calibrate);
         break;
     }
@@ -77,9 +80,20 @@ void Model::handler(const ResponseAnswer_ENUM cmd, const QString&JSONdata)
         emit controllerHandler(MODEL__TEST_PATH_d, JSONtoStr(respJson));
         break;
     }
+    case VIEW_TEST_VIEW_SHOW_SUCCESS:
+    {
+        //запускаем трегинг в другом потоке
+        QtConcurrent::run(_eyeTracker, &EyeTracker::startTracking);
+        break;
+    }
     default:
         break;
     }
+}
+
+void Model::gazePoint(double inX, double inY)
+{
+
 }
 
 void Model::init()

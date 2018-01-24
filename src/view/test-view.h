@@ -10,16 +10,16 @@ class TestView : public QWidget
 {
     Q_OBJECT
 public:
-    explicit TestView(QWidget *parent = nullptr);
-//    ResponseAnswer_ENUM load(QString);
+    TestView(QWidget *parent = nullptr);
+    ResponseAnswer_ENUM load(QString);
 private:
     bool testLoaded;
-//    QString address;
+    QString address;
 
-//    void demoLoad();
-//    void draw();
-//    bool _demo;
-//    TestRepresinatationData *_testView;
+    void demoLoad();
+    void draw();
+    bool _demo;
+    TestRepresinatationData *_testView;
 };
 
 #endif // TESTVIEW_H
