@@ -41,9 +41,22 @@ void Controller::handler(const ResponseAnswer_ENUM cmd, const QString JSONdata)
     }
     case VIEW_TEST_VIEW_SHOW_SUCCESS:
     {// отправляем запрос на запуск трекинга
-        emit modelHandler(EYE_TRACKER_START_TRACKING);
+        emit modelHandler(VIEW_TEST_VIEW_SHOW_SUCCESS);
         break;
     }
+    case VIEW_WINDOW_SIZE_d:
+    {
+        emit modelHandler(VIEW_WINDOW_SIZE_d, JSONdata);
+        break;
+    }
+    case VIEW_TEST_CLOSE_TEST:
+    {
+        emit modelHandler(VIEW_TEST_CLOSE_TEST);
+        break;
+    }
+    case APP_EXIT:
+        emit appExit();
+        break;
     default:
         break;
     }

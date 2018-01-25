@@ -17,6 +17,8 @@ public:
 signals:
     void sendSignal(const ResponseAnswer_ENUM cmd, const QString JSONdata = "");
 private:
+    void init();
+    QWidget *menuList;
 };
 
 #endif // Menu_H

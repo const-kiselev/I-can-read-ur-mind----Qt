@@ -12,6 +12,8 @@ class TestView : public QWidget
 public:
     TestView(QWidget *parent = nullptr);
     ResponseAnswer_ENUM load(QString);
+signals:
+    void sendSignal(const ResponseAnswer_ENUM cmd, const QString JSONdata = "");
 private:
     bool testLoaded;
     QString address;

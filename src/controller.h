@@ -14,6 +14,7 @@ public:
 signals:
     void modelHandler(const ResponseAnswer_ENUM cmd, const QString JSONdata = "");
     void viewHandler(const ResponseAnswer_ENUM cmd, const QString JSONdata = "");
+    void appExit();
 public slots:
     void handler(const ResponseAnswer_ENUM cmd, const QString JSONdata = "");
 

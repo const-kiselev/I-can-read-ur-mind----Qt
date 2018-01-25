@@ -14,6 +14,7 @@ struct GazePoint {
     bool fixaction;
     unsigned timestamp;
     GazePoint() : fixaction(false){}
+    GazePoint(double inX, double inY) : fixaction(false), xValue(inX), yValue(inY){}
     QPointF posF(){
         return QPointF(xValue, yValue);
     }
@@ -37,7 +38,7 @@ signals:
 public slots:
 private:
 
-    void getAvrCurrentData();
+    GazePoint getAvrCurrentData();
     void getCurrentData();
     void printCurrentData();
     void calculate();
@@ -55,17 +56,7 @@ private:
 
     // DATA methods:
 
-#ifdef NO_EYE_TRACKER_TEST
-    ///
-    /// тестирование с помощью мышки
-    /// Не будет работать :С
-    ///
-    void calculate(QMouseEvent *pe);
-    bool clicked;
-    virtual void EyeTracker::mousePressEvent(QMouseEvent *event);
-    virtual void EyeTracker::mouseReleaseEvent(QMouseEvent *);
-    virtual void EyeTracker::mouseMoveEvent(QMouseEvent *event);
-#endif
+
 
 
 };

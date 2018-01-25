@@ -19,7 +19,7 @@ ResponseAnswer_ENUM TestView::load(QString inStr)
 
 void TestView::demoLoad()
 {
-    _testView = new TestRepresinatationData;
+   _testView = new TestRepresinatationData;
    ROI_VectorElement tmpROI;
    tmpROI.ID = _testView->ROIsVector.length();
    tmpROI.type = ROI_rect;
@@ -151,4 +151,13 @@ void TestView::draw()
         tmpLabel->setFrameStyle(QFrame::Box);
         tmpLabel->setLineWidth(1);
     }
+    /// Проработать, в зависимости от логики теста переход между
+    /// заданиями и выход из теста (окно результата или ).
+    ///
+
+    QPushButton *pcmd1 = new QPushButton(this);
+    pcmd1->setText("Выйти");
+    pcmd1->move(width()-200, height()-70);
+    connect(pcmd1, &QPushButton::clicked, this,
+            [=](){emit sendSignal(VIEW_TEST_CLOSE_TEST); });
 }

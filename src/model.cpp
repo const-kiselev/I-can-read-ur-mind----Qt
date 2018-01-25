@@ -3,6 +3,8 @@ Model::Model(QObject *parent) : QObject(parent)
 {
     _eyeTracker = nullptr;
     _testsController = nullptr;
+    _file = nullptr;
+    _textFileStream = nullptr;
 }
 
 Model::~Model()
@@ -83,12 +85,33 @@ void Model::handler(const ResponseAnswer_ENUM cmd, const QString&JSONdata)
     }
     case VIEW_TEST_VIEW_SHOW_SUCCESS:
     {
-        // открываем новый файл для записи RAW-данных трекинга
+        _testsController->startTest();
+            /// открываем новый файл для записи RAW-данных трекинга
         // todo: после добавления класса с юзером, необходимо будет указать его ID в файле!
-        openFile(QDateTime::currentDateTime().toString()+QString(_testsController->getActiveTestID()));
-        setStreamForTracking();
-        //запускаем трекинг в другом потоке
+        openFile(QDateTime::currentDateTime().toString("yy_MM_dd_hh_mm_ss_zzz_")+QString("testID_")+QString::number(_testsController->getActiveTestID()));
+        setStreamForTracking(); // устанавливаем для айТрекера стрим для вывода RAW данных непосредственно в файл
+            /// соединяем сигнал об изменении GazePoint с контроллером тестов, который определяет алгоритм анализа данных
+        connect(_eyeTracker, SIGNAL(sendGazePoint(double,double)),
+                _testsController, SLOT(setGazePointForAnalysis(double,double)));
+            /// запускаем трекинг в другом потоке
+        _testsController->setStreamForActiveTest(_textFileStream);
         QtConcurrent::run(_eyeTracker, &EyeTracker::startTracking);
+        break;
+    }
+    case VIEW_TEST_CLOSE_TEST:
+    {
+        _eyeTracker->stopTracking();
+        // TODO: необходимо реализовать выход из теста!
+        disconnect(_eyeTracker, SIGNAL(sendGazePoint(double,double)),
+                   _testsController, SLOT(setGazePointForAnalysis(double,double)));
+        _testsController->finishTest();
+        closeFile();
+        break;
+    }
+    case VIEW_WINDOW_SIZE_d:
+    {
+        _testsController->setWidgetSize(json["width"].toInt(),
+                json["height"].toInt());
         break;
     }
     default:
@@ -96,14 +119,9 @@ void Model::handler(const ResponseAnswer_ENUM cmd, const QString&JSONdata)
     }
 }
 
-void Model::gazePoint(double inX, double inY)
-{
-
-}
-
 void Model::init()
 {
-    _testsController = new TestsController;
+    _testsController = new TestsController();
     if(_testsController->init()){ // инициализация контроллера тестов, если неуспешно, то выходим
         delete _testsController;
         _testsController = nullptr;
@@ -132,14 +150,19 @@ void Model::init()
 void Model::openFile(QString fileName)
 {
     if(_file)
+    {
         qDebug() << "There's open file. Please, close it for new one.";
+        return;
+    }
     _file = new QFile(fileName + ".txt");
     if(!_file->open(QIODevice::ReadWrite))
     {
         qDebug() << "Can not open the file.";
         delete _file;
         _file = nullptr;
+        return;
     }
+    qDebug() << "File Name: " << fileName;
     _textFileStream = new QTextStream(_file);
 }
 

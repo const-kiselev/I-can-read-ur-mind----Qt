@@ -15,6 +15,7 @@ QString JSONtoStr(QJsonObject inJson);
 QJsonObject JSON_fromStr(QString inStr);
 
 typedef enum {
+    OK_ANSWER,
     OTHER_SIGNAL_WITH_DATA,
 
     EYE_TRACKER_INIT,
@@ -53,8 +54,10 @@ typedef enum {
     VIEW_TEST_VIEW_LOAD_FAILED,
     VIEW_TEST_VIEW_SHOW_SUCCESS,
     VIEW_TEST_PATH_FOR_LOAD,
+    VIEW_TEST_CLOSE_TEST,
     VIEW_PROBLEM_WAS_CLOSED,
 
+    VIEW_WINDOW_SIZE_d,
 
     MODEL_INIT,
     MODEL_INIT_ALL_GADGETS,
@@ -73,7 +76,8 @@ typedef enum {
 
     ERROR_IN,
     ERROR_MODEL_INIT_TESTS_CONTROLLER_INIT,
-    ERROR_MODEL_EYE_TRACKER_INIT
+    ERROR_MODEL_EYE_TRACKER_INIT,
+    APP_EXIT
 }ResponseAnswer_ENUM;
 
 typedef enum{

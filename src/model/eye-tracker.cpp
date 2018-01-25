@@ -12,9 +12,6 @@ EyeTracker::EyeTracker() : QObject(new QObject)
     THRESHOLD = 10.0;
     outputStream = nullptr;
 
-#ifdef NO_EYE_TRACKER_TEST
-    clicked = false;
-#endif
 
 }
 
@@ -146,6 +143,11 @@ int EyeTracker::calibrate()
     return 0;
 }
 
+void gazeDataCallback(TobiiResearchGazeData*gaze_data, void* user_data)
+{
+    memcpy(user_data, gaze_data, sizeof(*gaze_data));
+}
+
 int EyeTracker::startTracking()
 {
     if(!eye_tracker)
@@ -164,7 +166,7 @@ int EyeTracker::startTracking()
     }
 #endif
 
-    status = tobii_research_subscribe_to_gaze_data(eye_tracker, gazeDataCallback, &gaze_data);
+    status = tobii_research_subscribe_to_gaze_data(eye_tracker,gazeDataCallback, &lastGazeData);
     if (status != TOBII_RESEARCH_STATUS_OK)
         return EYE_TRACKER_PROBLEM_WITH_TRACKING_START;
 
@@ -201,17 +203,12 @@ int EyeTracker::stopTracking()
     return 0;
 }
 
-QPointF EyeTracker::getAvrCurrentData()
+GazePoint EyeTracker::getAvrCurrentData()
 {
-    return QPointF( (lastGazeData.left_eye.gaze_point.position_on_display_area.x +
+    return GazePoint( (lastGazeData.left_eye.gaze_point.position_on_display_area.x +
                    lastGazeData.right_eye.gaze_point.position_on_display_area.x) / 2,
                     (lastGazeData.left_eye.gaze_point.position_on_display_area.y +
                     lastGazeData.right_eye.gaze_point.position_on_display_area.y) / 2);
-}
-
-void EyeTracker::gazeDataCallback(TobiiResearchGazeData*, void* user_data)
-{
-    memcpy(user_data, gaze_data, sizeof(*gaze_data));
 }
 
 void EyeTracker::printCurrentData()
@@ -226,11 +223,12 @@ void EyeTracker::printCurrentData()
         *outputStream << currentGazePoint.xValue << " " <<
                         currentGazePoint.yValue << " " <<
                         currentGazePoint.fixaction<< "\n";
+    emit sendGazePoint(currentGazePoint.xValue, currentGazePoint.yValue);
 }
 
 void EyeTracker::calculate()
 {
-    QPoint tmp = currentGazePoint.posF()-prevGazePoint.posF();
+    QPointF tmp = currentGazePoint.posF()-prevGazePoint.posF();
     double x = sqrt(tmp.x()*tmp.x()+tmp.y()*tmp.y());
 qDebug() << "lenght = " << x;
     if( x > THRESHOLD)
@@ -247,39 +245,4 @@ void EyeTracker::setTextStream(QTextStream *inStream)
     outputStream = inStream;
 }
 
-#ifdef NO_EYE_TRACKER_TEST
 
-void EyeTracker::calculate(QMouseEvent *pe)
-{
-    ///  только для данного теста проверка,
-    ///  так как используем мышку, то возможно,
-    ///  что будет потворяющиеся координаты
-
-    if(pe->globalPos() == prevGazePoint.pos())
-        return;
-
-    currentGazePoint.xValue = pe->globalX();
-    currentGazePoint.yValue = pe->globalY();
-    calculate();
-}
-
-void EyeTracker::mousePressEvent(QMouseEvent *event)
-{
-    clicked = true;
-    calculate(event);
-}
-
-void EyeTracker::mouseReleaseEvent(QMouseEvent *)
-{
-    clicked = false;
-    prevGazePoint.xValue = -10;
-    prevGazePoint.yValue = -10;
-}
-
-void EyeTracker::mouseMoveEvent(QMouseEvent *event)
-{
-    if(clicked)
-        calculate(event);
-}
-
-#endif

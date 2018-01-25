@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/img">
         <file alias="spinner">src/images/other/spinner-black.gif</file>
+        <file alias="itmo_logo_full_blue">src/images/other/itmo_logo_white_rus.png</file>
     </qresource>
 </RCC>

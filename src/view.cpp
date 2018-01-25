@@ -2,7 +2,6 @@
 
 View::View(QObject *parent) : QObject(parent)
 {
-
     // ADD resize!!!!
     // FOR macOS:
     //QTimer::singleShot(1000, &window, SLOT(showFullScreen()));
@@ -15,8 +14,11 @@ void View::init()
             this, SLOT(handler(const ResponseAnswer_ENUM, const QString)));
     _mainWindow->init();
     _mainWindow->show();
+    _mainWindow->showFullScreen();
     _mainWindow->showLoadingWidget();
     _menu = new Menu;
+    qDebug() << "_mainWindow width = " << _mainWindow->width() << " height = " << _mainWindow->height();
+    _menu->resize(_mainWindow->width(), _mainWindow->height());
     connect(_menu, SIGNAL(sendSignal(const ResponseAnswer_ENUM, const QString)),
             this, SLOT(handler(const ResponseAnswer_ENUM, const QString)));
     emit controllerHandler(VIEW_INIT_COMRLETED);
@@ -105,6 +107,7 @@ void View::handler(const ResponseAnswer_ENUM cmd, const QString JSONdata)
     case VIEW_TEST_PATH_FOR_LOAD:
     {
         _testView = new TestView();
+        _testView->resize(_mainWindow->size());
         resp = _testView->load(json["testPath"].toString());
         emit controllerHandler(resp);
         if(resp!=VIEW_TEST_VIEW_LOAD_SUCCESS)
@@ -114,7 +117,29 @@ void View::handler(const ResponseAnswer_ENUM cmd, const QString JSONdata)
             break;
         }
         _mainWindow->addAndShowInViewStack(_testView);
+        QJsonObject tmpSizeJson;
+        tmpSizeJson["width"] = _mainWindow->width();
+        tmpSizeJson["height"] = _mainWindow->height();
+        emit controllerHandler(VIEW_WINDOW_SIZE_d, JSONtoStr(tmpSizeJson));
         emit controllerHandler(VIEW_TEST_VIEW_SHOW_SUCCESS);
+
+        connect(_testView, SIGNAL(sendSignal(ResponseAnswer_ENUM,QString)),
+                this, SLOT(handler(ResponseAnswer_ENUM,QString)));
+        break;
+    }
+    case VIEW_TEST_CLOSE_TEST:
+    {
+        emit controllerHandler(VIEW_TEST_CLOSE_TEST);
+        disconnect(_testView, SIGNAL(sendSignal(ResponseAnswer_ENUM,QString)),
+                   this, SLOT(handler(ResponseAnswer_ENUM,QString)));
+        _mainWindow->removeFromStack(_testView);
+        delete _testView;
+        _testView = nullptr;
+        break;
+    }
+    case APP_EXIT:
+    {
+        emit controllerHandler(APP_EXIT);
         break;
     }
     default:

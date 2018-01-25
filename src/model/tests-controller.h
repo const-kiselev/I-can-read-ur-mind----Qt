@@ -4,13 +4,13 @@
 #include <QObject>
 #include "src/additional_header.h"
 
-struct ROIs_TestModel{
+struct ROI_TestModel{
     unsigned ID;
     ROI_type type;
     bool NOTforEyeTrackerFixation;
     QVector<QPoint> points;
     QPoint position;
-    ROIs_TestModel():NOTforEyeTrackerFixation(false){}
+    ROI_TestModel():NOTforEyeTrackerFixation(false){}
 };
 
 class TestModel : public QObject
@@ -21,69 +21,26 @@ public:
     void setPath(const QString&){}
     void demo(){_demo = true;}
     ResponseAnswer_ENUM load();
+    ResponseAnswer_ENUM unload();
+    void setStream(QTextStream *inStream) {outPutStream = inStream;}
 signals:
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
-
-#include <QMainWindow>
-#include <QPainter>
-#include <QtWidgets>
-#include <QJsonObject>
-#include <QFile>
-#include <QCursor>
-
-struct GazePoint {
-    int timestamp;
-    double xValue;
-    double yValue;
-    bool fixaction;
-    GazePoint(): fixaction(false){}
-    QPoint pos(){
-        return QPoint(xValue, yValue); // переделать на QPointF
-    }
-};
-
-class MainWindow : public QMainWindow
-{
-    Q_OBJECT
-
-public:
-    MainWindow(QWidget *parent = 0);
-    ~MainWindow();
-protected:
-    virtual void mousePressEvent(QMouseEvent *event);
-    virtual void mouseReleaseEvent(QMouseEvent *);
-    virtual void mouseMoveEvent(QMouseEvent *event);
-private:
-
-    void printCurrentData();
-    void calculate(QMouseEvent *pe);
-    /// public
-    void setTextStream(QTextStream*);
-
-    GazePoint prevGazePoint, currentGazePoint;
-    double THRESHOLD;
-    bool clicked;
-    QTextStream *outputStream;
-    ///
-    /// controller class's methods
-    ///
-    QFile *_file;
-    QTextStream *_textFileStream;
-    void openFile();
-    void closeFile();
-    void setStreamForTracking();
-};
-
-#endif // MAINWINDOW_H void loaded();
+    void loaded();
 public slots:
-public:
+    /// Будем получать данные уже в конвертированном виде,
+    /// так как это не копетенция самой модели теста
+    void setPointToROIsAnalysis(QPoint inPoint);
+private:
     // указатель на xml-file
     ResponseAnswer_ENUM loadTest(){} // реализовать
+    // Загружает ROI-области для анализа демо теста
     void demoLoadROIs();
 
+    bool _loaded;
     bool _demo;
-    QVector<ROIs_TestModel> _ROIsVector;
+    // вектор ROI-областей
+    QVector<ROI_TestModel> _ROIsVector;
+    QTextStream *outPutStream;
+
 };
 
 struct TestsListElement{
@@ -94,11 +51,18 @@ struct TestsListElement{
         _bciType(inType), _testModel(inTestModel) {}
 };
 
+/*!
+    \class TestsController
+    \brief  The TestsController class is tool for tests managment
+ */
+
+
+
 class TestsController : public QObject
 {
     Q_OBJECT
 public:
-    explicit TestsController(QObject *parent = nullptr);
+    TestsController(QObject *parent = nullptr);
 
     int init(); // todo
     int addBCI(BCI_TYPE);
@@ -106,15 +70,23 @@ public:
 
     ResponseAnswer_ENUM loadTest(int ID);
     ResponseAnswer_ENUM startTest();
+    ResponseAnswer_ENUM finishTest();
     QString getTestXMLfileLink(); // only after loadTest
     int getActiveTestID();
+    void setWidgetSize(int inW, int inH) {
+        widgetSize.setX(inW);
+        widgetSize.setY(inH);
+    }
+    void setStreamForActiveTest(QTextStream *inStream);
 signals:
     void sendSignal(const ResponseAnswer_ENUM cmd, const QString JSONdata = "");
 public slots:
     void testLoaded();
+    void setGazePointForAnalysis(double inX, double inY);
 private:
     int activeTestID;
     int loadedPageID;
+    QPoint widgetSize;
     QList<TestsListElement> _testsList;
     int findTests(BCI_TYPE); // реализваоть реальный поиск!!!!!
 };
