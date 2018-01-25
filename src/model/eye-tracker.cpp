@@ -6,6 +6,16 @@ EyeTracker::EyeTracker() : QObject(new QObject)
     calibrate_need = true;
     eye_tracker = nullptr;
     tracking_active = false;
+
+    prevGazePoint.xValue = -10;
+    prevGazePoint.yValue = -10;
+    THRESHOLD = 10.0;
+    outputStream = nullptr;
+
+#ifdef NO_EYE_TRACKER_TEST
+    clicked = false;
+#endif
+
 }
 
 EyeTracker::~EyeTracker()
@@ -16,9 +26,9 @@ EyeTracker::~EyeTracker()
 
 int EyeTracker::init()
 {
-    if (NO_ET) {
-        return 0;
-    }
+#ifdef NO_EYE_TRACKER_TEST
+    return 0;
+#endif
     // Задачи для реализации:
     // Необходимо дописать и сделать:
     //	- после поиска всех устройств предлагать пользователю выбрать, какое использовать
@@ -43,7 +53,9 @@ int EyeTracker::calibrate()
     jsonPoint["y"]=0.0f;
     jsonPoint["time"] = 1000;
 
-    if (NO_ET) {
+
+#ifdef NO_EYE_TRACKER_TEST
+    {
         emit sendSignal(EYE_TRACKER_SUCESSFULL_CALIBRATION_START);
         #define NUM_OF_POINTS  9U
         TobiiResearchNormalizedPoint2D points_to_calibrate[NUM_OF_POINTS] = \
@@ -62,6 +74,7 @@ int EyeTracker::calibrate()
         emit sendSignal(EYE_TRACKER_LEAVE_CALIBRATION_MODE);
         return 0;
     }
+#endif
 
     TobiiResearchStatus status = tobii_research_screen_based_calibration_enter_calibration_mode(eye_tracker);
     if (status == TOBII_RESEARCH_STATUS_OK)
@@ -144,21 +157,25 @@ int EyeTracker::startTracking()
 
     tracking_active = true;
 
+#ifdef NO_EYE_TRACKER_TEST
+    {
+
+        return 0;
+    }
+#endif
+
     status = tobii_research_subscribe_to_gaze_data(eye_tracker, gazeDataCallback, &gaze_data);
     if (status != TOBII_RESEARCH_STATUS_OK)
         return EYE_TRACKER_PROBLEM_WITH_TRACKING_START;
 
     QPointF tmpPoint;
     while(tracking_active){
-        //gaze_data.left_eye.gaze_point.position_on_display_area.x + gaze_data.right_eye.gaze_point.position_on_display_area.x) / 2;
-        //gaze_data.left_eye.gaze_point.position_on_display_area.y + gaze_data.right_eye.gaze_point.position_on_display_area.y) / 2;
-
         //boost::this_thread::sleep_for(boost::chrono::milliseconds(360));
-        tmpPoint = getAvrCurrentData();
-        emit sendGazePoint(tmpPoint.x(), tmpPoint.y());
+        currentGazePoint = getAvrCurrentData();
+        calculate();
+        //emit sendGazePoint(tmpPoint.x(), tmpPoint.y());
     }
-
-        return 0;
+    return 0;
 }
 
 int EyeTracker::stopTracking()
@@ -171,6 +188,14 @@ int EyeTracker::stopTracking()
         return EYE_TRACKER_TRACKING_PROCESS_HAVE_NOT_STARTED;
 
     tracking_active = false;
+
+#ifdef NO_EYE_TRACKER_TEST
+    {
+        emit sendSignal(EYE_TRACKER_LEFT_TRACKING_PROCESS);
+        return 0;
+    }
+#endif
+
     status = tobii_research_unsubscribe_from_gaze_data(eye_tracker, gazeDataCallback);
     emit sendSignal(EYE_TRACKER_LEFT_TRACKING_PROCESS);
     return 0;
@@ -188,3 +213,73 @@ void EyeTracker::gazeDataCallback(TobiiResearchGazeData*, void* user_data)
 {
     memcpy(user_data, gaze_data, sizeof(*gaze_data));
 }
+
+void EyeTracker::printCurrentData()
+{
+    /// отображение даннх. Если выходной поток был не зада, но данные отображаются в дебаггере
+    /// было бы неплохо, если бы просто происходила запись в файл, если не задан выходной поток
+    if(!outputStream)
+        qDebug() << currentGazePoint.xValue <<
+                    currentGazePoint.yValue <<
+                    currentGazePoint.fixaction;
+    else
+        *outputStream << currentGazePoint.xValue << " " <<
+                        currentGazePoint.yValue << " " <<
+                        currentGazePoint.fixaction<< "\n";
+}
+
+void EyeTracker::calculate()
+{
+    QPoint tmp = currentGazePoint.posF()-prevGazePoint.posF();
+    double x = sqrt(tmp.x()*tmp.x()+tmp.y()*tmp.y());
+qDebug() << "lenght = " << x;
+    if( x > THRESHOLD)
+        currentGazePoint.fixaction = false;
+    else
+        currentGazePoint.fixaction = true;
+
+    printCurrentData();
+    prevGazePoint = currentGazePoint;
+}
+
+void EyeTracker::setTextStream(QTextStream *inStream)
+{
+    outputStream = inStream;
+}
+
+#ifdef NO_EYE_TRACKER_TEST
+
+void EyeTracker::calculate(QMouseEvent *pe)
+{
+    ///  только для данного теста проверка,
+    ///  так как используем мышку, то возможно,
+    ///  что будет потворяющиеся координаты
+
+    if(pe->globalPos() == prevGazePoint.pos())
+        return;
+
+    currentGazePoint.xValue = pe->globalX();
+    currentGazePoint.yValue = pe->globalY();
+    calculate();
+}
+
+void EyeTracker::mousePressEvent(QMouseEvent *event)
+{
+    clicked = true;
+    calculate(event);
+}
+
+void EyeTracker::mouseReleaseEvent(QMouseEvent *)
+{
+    clicked = false;
+    prevGazePoint.xValue = -10;
+    prevGazePoint.yValue = -10;
+}
+
+void EyeTracker::mouseMoveEvent(QMouseEvent *event)
+{
+    if(clicked)
+        calculate(event);
+}
+
+#endif

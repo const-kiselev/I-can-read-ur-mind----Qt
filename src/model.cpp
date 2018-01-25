@@ -70,6 +70,7 @@ void Model::handler(const ResponseAnswer_ENUM cmd, const QString&JSONdata)
         break;
     case MODEL_START_TEST_d:
     {
+        // загружаем тест из контролера тестов
         resp = _testsController->loadTest(json["ID"].toInt());
         emit controllerHandler(resp);
         if(resp != MODEL_TESTS_CONTROLLER_LOADED)
@@ -82,7 +83,11 @@ void Model::handler(const ResponseAnswer_ENUM cmd, const QString&JSONdata)
     }
     case VIEW_TEST_VIEW_SHOW_SUCCESS:
     {
-        //запускаем трегинг в другом потоке
+        // открываем новый файл для записи RAW-данных трекинга
+        // todo: после добавления класса с юзером, необходимо будет указать его ID в файле!
+        openFile(QDateTime::currentDateTime().toString()+QString(_testsController->getActiveTestID()));
+        setStreamForTracking();
+        //запускаем трекинг в другом потоке
         QtConcurrent::run(_eyeTracker, &EyeTracker::startTracking);
         break;
     }
@@ -122,4 +127,32 @@ void Model::init()
         emit viewHandler(ERROR_MODEL_EYE_TRACKER_INIT);
         qDebug() << "ERROR_MODEL_EYE_TRACKER_INIT";
     }
+}
+
+void Model::openFile(QString fileName)
+{
+    if(_file)
+        qDebug() << "There's open file. Please, close it for new one.";
+    _file = new QFile(fileName + ".txt");
+    if(!_file->open(QIODevice::ReadWrite))
+    {
+        qDebug() << "Can not open the file.";
+        delete _file;
+        _file = nullptr;
+    }
+    _textFileStream = new QTextStream(_file);
+}
+
+void Model::closeFile()
+{
+    delete _textFileStream;
+    _textFileStream = nullptr;
+    _file->close();
+    delete _file;
+    _file = nullptr;
+}
+
+void Model::setStreamForTracking()
+{
+    _eyeTracker->setTextStream(_textFileStream);
 }

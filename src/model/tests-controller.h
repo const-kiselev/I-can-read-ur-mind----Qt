@@ -107,6 +107,7 @@ public:
     ResponseAnswer_ENUM loadTest(int ID);
     ResponseAnswer_ENUM startTest();
     QString getTestXMLfileLink(); // only after loadTest
+    int getActiveTestID();
 signals:
     void sendSignal(const ResponseAnswer_ENUM cmd, const QString JSONdata = "");
 public slots:

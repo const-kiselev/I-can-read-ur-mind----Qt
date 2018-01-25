@@ -45,6 +45,11 @@ QString TestsController::getTestXMLfileLink()
     return QString("demo");
 }
 
+int TestsController::getActiveTestID()
+{
+    return activeTestID;
+}
+
 QList<ViewTestElement> TestsController::getListOfTests()
 {
     QList<ViewTestElement> res;

@@ -6,6 +6,7 @@
 #include "src/additional_header.h"
 #include "src/model/eye-tracker.h"
 #include "src/model/tests-controller.h"
+#include <QDateTime>
 
 class Model : public QObject
 {
@@ -23,8 +24,15 @@ public slots:
 private:
     EyeTracker *_eyeTracker;
     TestsController *_testsController;
+    QObject *_userController;
 
     void init();
+
+    QFile *_file;
+    QTextStream *_textFileStream;
+    void openFile(QString fileName);
+    void closeFile();
+    void setStreamForTracking();
 };
 
 #endif // MODEL_H

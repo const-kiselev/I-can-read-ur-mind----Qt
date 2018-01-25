@@ -1,9 +1,6 @@
 #ifndef EYETRACKE_H
 #define EYETRACKE_H
 
-#define NO_EYE_TRACKER_TEST
-
-
 #include <QApplication>
 #include <tobii_research.h>
 #include <tobii_research_calibration.h>
@@ -33,6 +30,7 @@ public:
     int calibrate();
     int startTracking();
     int stopTracking();
+    void setTextStream(QTextStream *inStream);
 signals:
     void sendSignal(const ResponseAnswer_ENUM cmd, const QString JSONdata = "");
     void sendGazePoint(double inX, double inY); // отправка уведомления об изменении gaze point
@@ -41,25 +39,32 @@ private:
 
     void getAvrCurrentData();
     void getCurrentData();
+    void printCurrentData();
+    void calculate();
 
     TobiiResearchEyeTracker* eye_tracker;
     TobiiResearchStatus status;
     TobiiResearchGazeData lastGazeData;
 
     GazePoint prevGazePoint, currentGazePoint;
+    double THRESHOLD;
     bool calibrate_done;
     bool calibrate_need;
     bool tracking_active;
+    QTextStream *outputStream;
 
     // DATA methods:
 
 #ifdef NO_EYE_TRACKER_TEST
     ///
     /// тестирование с помощью мышки
+    /// Не будет работать :С
     ///
-    virtual void MainWindow::mousePressEvent(QMouseEvent *event);
-    virtual void MainWindow::mouseReleaseEvent(QMouseEvent *);
-    virtual void MainWindow::mouseMoveEvent(QMouseEvent *event);
+    void calculate(QMouseEvent *pe);
+    bool clicked;
+    virtual void EyeTracker::mousePressEvent(QMouseEvent *event);
+    virtual void EyeTracker::mouseReleaseEvent(QMouseEvent *);
+    virtual void EyeTracker::mouseMoveEvent(QMouseEvent *event);
 #endif
 
 
@@ -69,5 +74,5 @@ private:
 
 
 
-// Принцип работы класса:
-//
+/// Принцип работы класса:
+///

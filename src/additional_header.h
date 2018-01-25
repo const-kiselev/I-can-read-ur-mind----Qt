@@ -8,6 +8,7 @@
 #include <QList>
 
 #define NO_ET true
+#define NO_EYE_TRACKER_TEST
 
 
 QString JSONtoStr(QJsonObject inJson);
