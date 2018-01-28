@@ -21,7 +21,7 @@ void Menu::init()
     setLayout(pvbxLayout);
     menuList = new QWidget;
     menuList->setLayout(menuLayout);
-    layout()->setAlignment(menuLayout, Qt::AlignCenter);
+   // layout()->setAlignment(menuLayout, Qt::AlignCenter);
     layout()->addWidget(menuList);
     menuList->setMaximumHeight(300);
     //menuLayout->setMargin(5);

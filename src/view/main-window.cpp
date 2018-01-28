@@ -20,6 +20,7 @@ int MainWindow::addInViewStack(QWidget *inWidget)
 
 int MainWindow::addAndShowInViewStack(QWidget *inWidget)
 {
+    inWidget->resize(width(), height());
     int res = stackedWidget->addWidget(inWidget);
     stackedWidget->setCurrentIndex(res);
     if(loadingWidgetIndexInStack!=-1) // автоматическое скрытие виджета с загрузкой
@@ -29,6 +30,7 @@ int MainWindow::addAndShowInViewStack(QWidget *inWidget)
 
 int MainWindow::showWidgetFromStack(QWidget *inWidget)
 {
+    inWidget->resize(width(), height());
     stackedWidget->setCurrentWidget(inWidget);
     return stackedWidget->currentIndex();
 }

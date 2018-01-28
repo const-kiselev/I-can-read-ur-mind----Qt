@@ -11,6 +11,7 @@ class Calibration : public QWidget
 {
     Q_OBJECT
     Q_PROPERTY(QPointF pos READ pos WRITE setPos)
+    Q_PROPERTY(QPoint circleFrame READ pos WRITE setCircleFrame)
 public:
     explicit Calibration(QWidget *parent = nullptr);
 
@@ -19,6 +20,14 @@ public:
     {
         circleRect.setX(inPointF.x());
         circleRect.setY(inPointF.y());
+        this->repaint();
+    }
+    void setCircleFrame(QPoint inPoint)
+    {
+        //spriteFrame.setX(inPoint.x());
+        spriteFrame.setY(inPoint.y()*50);
+        spriteFrame.setWidth(50);
+        spriteFrame.setHeight(50);
         this->repaint();
     }
     void loading();
@@ -34,8 +43,10 @@ private:
     QPoint circlePos;
     bool calibWidgetOpen;
     int wayTime;
-    QPropertyAnimation *propertyAnimation;
+    QPropertyAnimation *propertyAnimation,
+                       *circlePropertyAnimation;
     QRect circleRect;
+    QRect spriteFrame;
 
 
     void makeSprite();
