@@ -27,6 +27,7 @@ private:
     void fileController(ResponseAnswer_ENUM);
     void setWorkDir(QString);
     void createFile(QString);
+    int findAllFile();
 
 };
 
