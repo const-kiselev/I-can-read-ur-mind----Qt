@@ -5,6 +5,17 @@
 		<xs:annotation>
 			<xs:documentation>Content of the test</xs:documentation>
 		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="ID"/>
+				<xs:element ref="Title"/>
+				<xs:element ref="Intro"/>
+				<xs:element ref="Information"/>
+				<xs:element ref="Style"/>
+				<xs:element ref="ProblemOrder"/>
+				<xs:element ref="Problem"/>
+			</xs:sequence>
+		</xs:complexType>
 	</xs:element>
 	<xs:element name="ID">
 		<xs:annotation>
@@ -20,16 +31,80 @@
 	</xs:element>
 	<xs:element name="ProblemOrder">
 		<xs:annotation>
-			<xs:documentation>Open means that user can choose problems from test menu</xs:documentation>
+			<xs:documentation>means user can choose problems from test menu</xs:documentation>
 		</xs:annotation>
 	</xs:element>
 	<xs:element name="Information"/>
 	<xs:element name="Problem">
 		<xs:complexType>
-			<xs:attribute name="Skip" type="xs:boolean" default="true"/>
+			<xs:sequence>
+				<xs:element ref="Title"/>
+				<xs:element ref="Task"/>
+				<xs:element ref="ROI" maxOccurs="unbounded"/>
+				<xs:element ref="Answer" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="answertType">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="openAnswer"/>
+						<xs:enumeration value="showOnlyCorrectAnswer"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
 		</xs:complexType>
 	</xs:element>
-	<xs:element name="Task"/>
+	<xs:element name="Task">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:string">
+					<xs:attribute name="Skip" type="xs:boolean" default="true"/>
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
 	<xs:element name="Answer" type="xs:string" default="test"/>
-	<xs:element name="ROI"/>
+	<xs:element name="ROI">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="ID"/>
+				<xs:element ref="Position"/>
+				<xs:element ref="Content" minOccurs="0"/>
+				<xs:element ref="Point" maxOccurs="unbounded"/>
+				<xs:element ref="Style" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attribute name="ignore" type="xs:boolean" use="optional" default="false"/>
+			<xs:attribute name="type" use="optional" default="rect">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="rect"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Content">
+		<xs:annotation>
+			<xs:documentation>in future add IMG attribute</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string"/>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="Point">
+		<xs:complexType>
+			<xs:attribute name="x" type="xs:float" use="required"/>
+			<xs:attribute name="y" type="xs:float" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Style" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>in CSS</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="Position">
+		<xs:complexType>
+			<xs:attribute name="x" type="xs:float" use="required"/>
+			<xs:attribute name="y" type="xs:float" use="required"/>
+		</xs:complexType>
+	</xs:element>
 </xs:schema>
