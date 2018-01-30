@@ -45,7 +45,9 @@ class TestView : public QWidget
 public:
     TestView(QWidget *parent = nullptr);
     int load(QFile*); // changed
-
+signals:
+    void reload();
+    void loadNew();
 private:
     bool testLoaded;
     QFile *xmlFile; // new. Delete QString address;

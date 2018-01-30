@@ -59,7 +59,7 @@ typedef enum {
 
     VIEW_WINDOW_SIZE_d,
 
-    MODEL_INIT,
+    MODEL_INIT_d,
     MODEL_INIT_ALL_GADGETS,
     MODEL_INIT_COMRLETED,
     MODEL_START_TEST_d,

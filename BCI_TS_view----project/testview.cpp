@@ -144,10 +144,16 @@ void TestView::demoLoad()
 void TestView::draw()
 {
     QPushButton *pcmd1 = new QPushButton(this);
-    pcmd1->setText("Выйти");
+    QPushButton *pcmd2 = new QPushButton(this);
+    pcmd1->setText("Обновить");
+    pcmd2->setText("Открыть новый файл");
     pcmd1->move(width()-200, height()-70);
-//    connect(pcmd1, &QPushButton::clicked, this,
-//            [=](){emit sendSignal(VIEW_TEST_CLOSE_TEST); });
+    pcmd2->move(width()-200, height()-100);
+    connect(pcmd1, &QPushButton::clicked, this,
+            [=](){emit reload(); });
+    connect(pcmd2, &QPushButton::clicked, this,
+            [=](){emit loadNew(); });
+
 }
 
 void TestView::drawROI(ROI_VectorElement &printROI)
@@ -159,7 +165,7 @@ void TestView::drawROI(ROI_VectorElement &printROI)
     tmpLabel->move(printROI.position.x(), printROI.position.y());
     tmpLabel->resize(printROI.points.at(0).x(),printROI.points.at(0).y());
     qDebug() << printROI.points.at(0).x() << " " << printROI.points.at(0).y();
-    tmpLabel->setText(printROI.content);
+    tmpLabel->setText(printROI.content.replace("\\n", "\n"));
     tmpLabel->setFont( f);
     tmpLabel->setAlignment(Qt::AlignLeft | Qt::AlignTop);
     tmpLabel->setWordWrap(true);
@@ -176,8 +182,6 @@ void TestView::readXML()
     QXmlStreamReader xml(xmlFile);
     ROI_VectorElement tmpROI;
     QString elementInXML;
-    bool ROIelement = false;
-    unsigned cmdXML;
     do {
         xml.readNext();
         if(xml.isStartElement())
@@ -224,6 +228,7 @@ void TestView::readXML()
                     else if(xml.name() == "Content")
                     {
                         xml.readNext();
+                        qDebug() << "tmpROI.content = xml.text(): " <<  xml.text();
                         tmpROI.content = xml.text().toString();
                         qDebug() << "tmpROI.content = " << tmpROI.content << "\nxml.text().toString() = " << xml.text().toString();
                     }
@@ -266,6 +271,7 @@ void TestView::readXML()
     }while(!xml.atEnd());
     if(xml.hasError())
         qDebug() << "Error while XML reading:" << xml.errorString();
+
 }
 
 /*

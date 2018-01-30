@@ -19,15 +19,15 @@ public slots:
     void handler(const ResponseAnswer_ENUM cmd, const QString JSONdata = "");
 
 private:
-    struct fileCnt{
-        int ID;
-        QFile name;
-    };
-    QList<fileCnt> listOfFiles;
+    QList<QFile> listOfFiles;
+    QStringList listFiles;
+    QDir workDir;
+    QJsonObject * findAllTests();
     void fileController(ResponseAnswer_ENUM);
     void setWorkDir(QString);
     void createFile(QString);
     int findAllFile();
+
 
 };
 

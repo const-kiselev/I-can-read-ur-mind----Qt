@@ -12,7 +12,11 @@ void Controller::handler(const ResponseAnswer_ENUM cmd, const QString JSONdata)
     case VIEW_INIT_COMRLETED:
     {
         emit modelHandler(MODEL_INIT_ALL_GADGETS);
-        emit modelHandler(MODEL_INIT);
+        // после инициализации всех н-интерфейсов необходимо найти (загрузить) все доступные тесты в рабочей директории
+        QJsonObject * tmpJson = findAllTests();
+        // конвертируем список в JSON
+        emit modelHandler(MODEL_INIT_d, JSONtoStr(*tmpJson));
+        delete tmpJson;
         break;
     }
     case VIEW_CALIBRATION_WIDGET_READY:
@@ -60,4 +64,18 @@ void Controller::handler(const ResponseAnswer_ENUM cmd, const QString JSONdata)
     default:
         break;
     }
+}
+
+QJsonObject *Controller::findAllTests()
+{
+    qDebug() << "QDir::current()" << QDir::current();
+    workDir = QDir::current();
+    // находим в актуальной директории все файлы с помощью фильтра
+    listFiles = workDir.entryList("BCIs_T*.xml", QDir::Files);
+    QJsonObject * tmpJson = new QJsonObject;
+
+    int i=0;
+    foreach(QString fileElement, listFiles)
+        tmpJson[QString(i)] = fileElement;
+    return tmpJson;
 }

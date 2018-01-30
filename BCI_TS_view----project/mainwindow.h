@@ -11,6 +11,13 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
+public slots:
+    void reloadXML();
+    void loadNewXML();
+private:
+
+    void readXML();
+     QFile *mainFile;
 };
 
 #endif // MAINWINDOW_H

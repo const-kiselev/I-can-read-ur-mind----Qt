@@ -36,8 +36,9 @@ void Model::handler(const ResponseAnswer_ENUM cmd, const QString&JSONdata)
                 this, SLOT(gazePoint(double,double)));
         break;
     }
-    case MODEL_INIT:
+    case MODEL_INIT_d:
     {
+        // инициализируем и добавляем тесты
         init();
         emit viewHandler(MODEL_INIT_COMRLETED);
         break;

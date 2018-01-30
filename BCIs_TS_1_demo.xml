@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2011 rel. 2 (http://www.altova.com) by TeaM DJiNN (TeaM DJiNN) -->
 <BCI_Test xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="BCI_Test.xsd">
 	<ID>1</ID>
 	<Title>Demo</Title>
@@ -13,7 +14,7 @@
 			<ID>0</ID>
 			<Position y="14" x="140"/>
 			<Content>Q1. Данная программа должна определить, является ли входное число совершенным (целое положительное число, которое является суммой своих делителей. 6 — совершенное число, т.к. 6 = 1+2+3). Необходимо найти три возможные ошибки в коде.</Content>
-			<Point x="318" y="384"/>
+			<Point x="318" y="420"/>
 		</ROI>
 		<ROI>
 			<ID>1</ID>
