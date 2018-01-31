@@ -22,7 +22,7 @@ private:
     QList<QFile> listOfFiles;
     QStringList listFiles;
     QDir workDir;
-    QJsonObject * findAllTests();
+    int findAllTests();
     void fileController(ResponseAnswer_ENUM);
     void setWorkDir(QString);
     void createFile(QString);

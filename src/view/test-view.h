@@ -16,12 +16,14 @@ signals:
     void sendSignal(const ResponseAnswer_ENUM cmd, const QString JSONdata = "");
 private:
     bool testLoaded;
-    QString address;
+    QFile *xmlFile; // new. Delete QString address;
 
     void demoLoad();
     void draw();
     bool _demo;
     TestRepresinatationData *_testView;
+    void drawROI(ROI_VectorElement &inROI);
+    void readXML();
 };
 
 #endif // TESTVIEW_H

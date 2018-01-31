@@ -47,6 +47,8 @@ typedef enum {
 
     CONTROLLER_ALL_GADGETS_SUCESSFULL_INITED,
     CONTROLLER_CALIBRATION_WIDGET_CLICKED_START,
+    CONTROLLER_ADD_NEW_TEST_FILE_WITH_DIALOG, // не реализован
+    CONTROLLER_NEW_TEST_FILE_d,
 
     VIEW_CALIBRATION_WIDGET_READY,
     VIEW_INIT_COMRLETED,
@@ -59,7 +61,7 @@ typedef enum {
 
     VIEW_WINDOW_SIZE_d,
 
-    MODEL_INIT_d,
+    MODEL_INIT,
     MODEL_INIT_ALL_GADGETS,
     MODEL_INIT_COMRLETED,
     MODEL_START_TEST_d,
@@ -71,6 +73,9 @@ typedef enum {
     MODEL_TESTS_CONTROLLER_SUCCESS_TEST_START,
     MODEL_TESTS_CONTROLLER_THERE_IS_ACTIVE_TEST,
     MODEL__TEST_PATH_d,
+    MODEL_ADD_TEST_d,
+    MODEL_TEST_WAS_ADDED_d, // в контроллере автоматически переходит на MENU_ADD_TEST_d
+    MODEL_TEST_WAS_DELETED_d,
 
     TESTS_CONTROLLER_LIST_WITH_TESTS_WAS_UPD,
 
@@ -87,13 +92,11 @@ typedef enum{
 struct ViewTestElement{
     int ID;
     QString name;
-    BCI_TYPE _bciType;
     QString converToJSONstr()
     {
         QJsonObject tmpJson;
         tmpJson["ID"] = ID;
         tmpJson["name"] = name;
-        tmpJson["BCI_TYPE"] = _bciType;
         return JSONtoStr(tmpJson);
     }
 };
@@ -104,8 +107,8 @@ struct ROI_VectorElement{
     unsigned ID;
     ROI_type type;
     bool NOTforEyeTrackerFixation;
-    QVector<QPoint> points;
-    QPoint position;
+    QVector<QPointF> points;
+    QPointF position;
     QString content;
     QString style; // ToDo: посмотреть, мб в Qt есть тип связанный со стилем lable
     ROI_VectorElement():NOTforEyeTrackerFixation(false){}

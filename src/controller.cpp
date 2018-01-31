@@ -12,11 +12,9 @@ void Controller::handler(const ResponseAnswer_ENUM cmd, const QString JSONdata)
     case VIEW_INIT_COMRLETED:
     {
         emit modelHandler(MODEL_INIT_ALL_GADGETS);
+        emit modelHandler(MODEL_INIT);
         // после инициализации всех н-интерфейсов необходимо найти (загрузить) все доступные тесты в рабочей директории
-        QJsonObject * tmpJson = findAllTests();
-        // конвертируем список в JSON
-        emit modelHandler(MODEL_INIT_d, JSONtoStr(*tmpJson));
-        delete tmpJson;
+        findAllTests();
         break;
     }
     case VIEW_CALIBRATION_WIDGET_READY:
@@ -27,6 +25,16 @@ void Controller::handler(const ResponseAnswer_ENUM cmd, const QString JSONdata)
     case MENU_OPEN_TEST_d:
     {
         emit modelHandler(MODEL_START_TEST_d, JSONdata);
+        break;
+    }
+    case CONTROLLER_NEW_TEST_FILE_d:
+    {
+        emit modelHandler(MODEL_ADD_TEST_d, JSONdata);
+        break;
+    }
+    case CONTROLLER_ADD_NEW_TEST_FILE_WITH_DIALOG:
+    {
+        // отправляется запрос во view с параметрами фильтрации
         break;
     }
 //    case MODEL_TESTS_CONTROLLER_TEST_NOT_LOADED:
@@ -58,6 +66,16 @@ void Controller::handler(const ResponseAnswer_ENUM cmd, const QString JSONdata)
         emit modelHandler(VIEW_TEST_CLOSE_TEST);
         break;
     }
+    case MODEL_TEST_WAS_ADDED_d:
+    {
+        emit viewHandler(MENU_ADD_TEST_d, JSONdata); // отправляем меню данные о тесте
+        break;
+    }
+    case MODEL_INIT_COMRLETED:
+    {
+        emit viewHandler(MODEL_INIT_COMRLETED);
+        break;
+    }
     case APP_EXIT:
         emit appExit();
         break;
@@ -66,16 +84,20 @@ void Controller::handler(const ResponseAnswer_ENUM cmd, const QString JSONdata)
     }
 }
 
-QJsonObject *Controller::findAllTests()
+int Controller::findAllTests()
 {
     qDebug() << "QDir::current()" << QDir::current();
     workDir = QDir::current();
     // находим в актуальной директории все файлы с помощью фильтра
-    listFiles = workDir.entryList("BCIs_T*.xml", QDir::Files);
-    QJsonObject * tmpJson = new QJsonObject;
+    listFiles = workDir.entryList(QStringList() << "BCIs_T*.xml",
+                                  QDir::Files);
+    QJsonObject  tmpJson;
 
-    int i=0;
     foreach(QString fileElement, listFiles)
-        tmpJson[QString(i)] = fileElement;
-    return tmpJson;
+    {
+        qDebug() << "Finded test file: " << fileElement;
+        tmpJson["fileName"] = fileElement;
+        handler(CONTROLLER_NEW_TEST_FILE_d, JSONtoStr(tmpJson));
+    }
+    return listFiles.count();
 }

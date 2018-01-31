@@ -58,7 +58,7 @@
 			<Content>sum=sum+i;\ni++;</Content>
 			<Point y="106" x="236"/>
 		</ROI>
-		<ROI ignore="true">
+		<ROI eyeTrackingIgnore="true">
 			<ID>8</ID>
 			<Position y="515" x="497"/>
 			<Content>    }\n}</Content>
@@ -76,7 +76,7 @@
 			<Content>return 0;</Content>
 			<Point y="40" x="158"/>
 		</ROI>
-		<ROI ignore="true">
+		<ROI eyeTrackingIgnore="true">
 			<ID>11</ID>
 			<Position y="792" x="471"/>
 			<Content>}</Content>

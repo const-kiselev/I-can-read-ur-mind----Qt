@@ -36,11 +36,12 @@ void Model::handler(const ResponseAnswer_ENUM cmd, const QString&JSONdata)
                 this, SLOT(gazePoint(double,double)));
         break;
     }
-    case MODEL_INIT_d:
+    case MODEL_INIT:
     {
         // инициализируем и добавляем тесты
         init();
-        emit viewHandler(MODEL_INIT_COMRLETED);
+        emit controllerHandler(MODEL_INIT_COMRLETED);
+        //emit viewHandler(MODEL_INIT_COMRLETED);
         break;
     }
     case EYE_TRACKER_START_CALIBRATION:
@@ -86,7 +87,7 @@ void Model::handler(const ResponseAnswer_ENUM cmd, const QString&JSONdata)
     }
     case VIEW_TEST_VIEW_SHOW_SUCCESS:
     {
-        _testsController->startTest();
+        qDebug() << _testsController->startTest();
             /// открываем новый файл для записи RAW-данных трекинга
         // todo: после добавления класса с юзером, необходимо будет указать его ID в файле!
         openFile(QDateTime::currentDateTime().toString("yy_MM_dd_hh_mm_ss_zzz_")+QString("testID_")+QString::number(_testsController->getActiveTestID()));
@@ -115,6 +116,21 @@ void Model::handler(const ResponseAnswer_ENUM cmd, const QString&JSONdata)
                 json["height"].toInt());
         break;
     }
+    case MODEL_ADD_TEST_d:
+    {
+        _testsController->addTest(json["fileName"].toString());
+        break;
+    }
+    case MODEL_TEST_WAS_ADDED_d:
+    {
+        emit controllerHandler(MODEL_TEST_WAS_ADDED_d, JSONdata);
+        break;
+    }
+    case MODEL_TEST_WAS_DELETED_d:
+    {
+        // TODO: реализовать
+        break;
+    }
     default:
         break;
     }
@@ -135,12 +151,13 @@ void Model::init()
     if(!_eyeTracker->init()) // инициализация айТрекера
     {
         emit viewHandler(EYE_TRACKER_SUCESSFULL_INIT);
-        if(_testsController->addBCI(BCI_TYPE_EYE_TRACKER)){ // если хотя бы один тест был найден, то выполняем
-            QList<ViewTestElement> tmp = _testsController->getListOfTests(); // запрашиваем список с доступными тестами
-            foreach (ViewTestElement tmpElement, tmp) { // проходимся по всем тестам списка
-                emit viewHandler(MENU_ADD_TEST_d, tmpElement.converToJSONstr()); // отправляем меню данные о тесте
-            }
-        }
+        _testsController->addBCI(BCI_TYPE_EYE_TRACKER);
+//        if(_testsController->addBCI(BCI_TYPE_EYE_TRACKER)){ // если хотя бы один тест был найден, то выполняем
+//            QList<ViewTestElement> tmp = _testsController->getListOfTests(); // запрашиваем список с доступными тестами
+//            foreach (ViewTestElement tmpElement, tmp) { // проходимся по всем тестам списка
+//                emit viewHandler(MENU_ADD_TEST_d, tmpElement.converToJSONstr()); // отправляем меню данные о тесте
+//            }
+//        }
     }
     else{
         emit viewHandler(ERROR_MODEL_EYE_TRACKER_INIT);

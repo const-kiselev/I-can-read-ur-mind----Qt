@@ -72,7 +72,7 @@
 				<xs:element ref="Point" maxOccurs="unbounded"/>
 				<xs:element ref="Style" minOccurs="0"/>
 			</xs:sequence>
-			<xs:attribute name="ignore" type="xs:boolean" use="optional" default="false"/>
+			<xs:attribute name="eyeTrackingIgnore" type="xs:boolean" use="optional" default="false"/>
 			<xs:attribute name="type" use="optional" default="rect">
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
