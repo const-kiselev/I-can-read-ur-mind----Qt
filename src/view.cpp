@@ -5,18 +5,20 @@ View::View(QObject *parent) : QObject(parent)
     // ADD resize!!!!
     // FOR macOS:
     //QTimer::singleShot(1000, &window, SLOT(showFullScreen()));
+    _gazePointTest = nullptr;
+
 }
 
 void View::init()
 {
-    _mainWindow = new MainWindow;
+    _mainWindow = new MainWindow();
     connect(_mainWindow, SIGNAL(sendSignal(const ResponseAnswer_ENUM, const QString)),
             this, SLOT(handler(const ResponseAnswer_ENUM, const QString)));
     _mainWindow->init();
     _mainWindow->show();
     _mainWindow->showFullScreen();
     _mainWindow->showLoadingWidget();
-    _menu = new Menu;
+    _menu = new Menu();
     qDebug() << "_mainWindow width = " << _mainWindow->width() << " height = " << _mainWindow->height();
     _menu->resize(_mainWindow->width(), _mainWindow->height());
     connect(_menu, SIGNAL(sendSignal(const ResponseAnswer_ENUM, const QString)),
@@ -32,7 +34,7 @@ void View::handler(const ResponseAnswer_ENUM cmd, const QString JSONdata)
     QJsonDocument doc;
     QJsonObject json;
     ResponseAnswer_ENUM resp;
-    if(JSONdata!=""){
+    if(JSONdata!="" && cmd!=MODEL_RAW_GAZE_POINT_notJSON_d){
         doc = QJsonDocument::fromJson(JSONdata.toUtf8());
         json = doc.object();
     }
@@ -59,7 +61,7 @@ void View::handler(const ResponseAnswer_ENUM cmd, const QString JSONdata)
     }
     case MENU_OPEN_EYE_TRACKER_CALIBRATION_WIDGET:
     {
-        _eyeTrackerCalibrationWidget = new Calibration;
+        _eyeTrackerCalibrationWidget = new Calibration();
         connect(_eyeTrackerCalibrationWidget, SIGNAL(sendSignal(const ResponseAnswer_ENUM, const QString)),
                 this, SLOT(handler(const ResponseAnswer_ENUM, const QString)));
         _mainWindow->addAndShowInViewStack(_eyeTrackerCalibrationWidget);
@@ -135,6 +137,49 @@ void View::handler(const ResponseAnswer_ENUM cmd, const QString JSONdata)
         _mainWindow->removeFromStack(_testView);
         delete _testView;
         _testView = nullptr;
+        break;
+    }
+    case VIEW_SHOW_ADDED_WIDGET:
+    {
+        _mainWindow->showLastAddedWidget();
+        break;
+    }
+
+    case EYE_TRACKER_STARTED_TRACKING:
+    {
+        if(_gazePointTest)
+            handler(VIEW_SHOW_ADDED_WIDGET);
+        break;
+    }
+    case MENU_OPEN_GAZE_POINT_TEST_WIDGET:
+    {
+        _gazePointTest = new GazePointTest();
+        // some button connect
+        _mainWindow->showLoadingWidget();
+        _mainWindow->addInViewStack(_gazePointTest);
+        _mainWindow->addButton("Выйти", QPoint(0,0), _gazePointTest, false, VIEW_CLOSE_GAZE_POINT_TEST);
+        // sending the signal to controller that we're ready to open widget
+        emit controllerHandler(VIEW_GAZE_POINT_TEST_WIDGET_READY);
+        break;
+    }
+    case MODEL_RAW_GAZE_POINT_notJSON_d: // пока используется только для GazePointTest
+    {
+        if(!_gazePointTest)
+            return;
+        int spacePos = JSONdata.indexOf(" ");
+        double xValue = JSONdata.mid(0,spacePos).toDouble(),
+                yValue = JSONdata.mid(spacePos+1, JSONdata.length()-spacePos-1).toDouble();
+        _gazePointTest->moveTo(xValue, yValue);
+        break;
+    }
+    case VIEW_CLOSE_GAZE_POINT_TEST:
+    {
+        if(!_gazePointTest)
+            return;
+        emit controllerHandler(VIEW_CLOSE_GAZE_POINT_TEST);
+        _mainWindow->removeFromStack(_gazePointTest);
+        delete _gazePointTest;
+        _gazePointTest = nullptr;
         break;
     }
     case APP_EXIT:

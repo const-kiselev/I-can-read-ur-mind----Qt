@@ -21,8 +21,11 @@ void Model::handler(const ResponseAnswer_ENUM cmd, const QString&JSONdata)
     QJsonObject json;
     ResponseAnswer_ENUM resp;
     if(JSONdata!=""){
-        doc = QJsonDocument::fromJson(JSONdata.toUtf8());
-        json = doc.object();
+        if(cmd !=  MODEL_SET_GAZE_POINT_DESTINATION_notJSON_d)
+        {
+            doc = QJsonDocument::fromJson(JSONdata.toUtf8());
+            json = doc.object();
+        }
     }
     switch (cmd) {
     case MODEL_INIT_ALL_GADGETS:
@@ -131,9 +134,49 @@ void Model::handler(const ResponseAnswer_ENUM cmd, const QString&JSONdata)
         // TODO: реализовать
         break;
     }
+    case MODEL_SET_GAZE_POINT_DESTINATION_notJSON_d:
+    {
+        gazePointDestination = (ResponseAnswer_ENUM)JSONdata.toInt();
+        break;
+    }
+    case EYE_TRACKER_START_TRACKING:
+    {
+        openFile(QDateTime::currentDateTime().toString("yy_MM_dd_hh_mm_ss_zzz_")+QString("GazePointTest"));
+        setStreamForTracking(); // устанавливаем для айТрекера стрим для вывода RAW данных непосредственно в файл
+            /// соединяем сигнал об изменении GazePoint с контроллером тестов, который определяет алгоритм анализа данных
+        connect(_eyeTracker, SIGNAL(sendGazePoint(double,double)),
+                this, SLOT(gazePoint(double,double)));
+        emit controllerHandler(EYE_TRACKER_STARTED_TRACKING);
+        /// запускаем трекинг в другом потоке
+        QtConcurrent::run(_eyeTracker, &EyeTracker::startTracking);
+        break;
+    }
+    case EYE_TRACKER_STOP_TRACKING:
+    {
+        _eyeTracker->stopTracking();
+        disconnect(_eyeTracker, SIGNAL(sendGazePoint(double,double)),
+                   this, SLOT(gazePoint(double,double)));
+        gazePointDestination = OK_ANSWER;
+        closeFile();
+        break;
+    }
     default:
         break;
     }
+}
+
+void Model::gazePoint(double inX, double inY)
+{
+    if(gazePointDestination == OK_ANSWER)
+        return;
+    if(gazePointDestination>VIEW)
+        emit viewHandler(MODEL_RAW_GAZE_POINT_notJSON_d, QString::number(inX)+" "+QString::number(inY));
+    else
+    {
+        // handler(gazePointDestination, someJSON);
+        // реализовать!!!
+    }
+
 }
 
 void Model::init()

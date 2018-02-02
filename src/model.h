@@ -20,6 +20,7 @@ signals:
     void controllerHandler(const ResponseAnswer_ENUM cmd, const QString&JSONdata = "");
 public slots:
     void handler(const ResponseAnswer_ENUM cmd, const QString&JSONdata = "");
+    void gazePoint(double inX,double inY);
 private:
     EyeTracker *_eyeTracker;
     TestsController *_testsController;
@@ -32,6 +33,7 @@ private:
     void openFile(QString fileName);
     void closeFile();
     void setStreamForTracking();
+    ResponseAnswer_ENUM gazePointDestination;
 };
 
 #endif // MODEL_H

@@ -215,10 +215,12 @@ void EyeTracker::printCurrentData()
 {
     /// отображение даннх. Если выходной поток был не зада, но данные отображаются в дебаггере
     /// было бы неплохо, если бы просто происходила запись в файл, если не задан выходной поток
-    if(!outputStream)
+    if(!outputStream){
         qDebug() << currentGazePoint.xValue <<
                     currentGazePoint.yValue <<
                     currentGazePoint.fixaction;
+
+    }
     else
         *outputStream << currentGazePoint.xValue << " " <<
                         currentGazePoint.yValue << " " <<

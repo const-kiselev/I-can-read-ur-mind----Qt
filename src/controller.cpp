@@ -76,6 +76,24 @@ void Controller::handler(const ResponseAnswer_ENUM cmd, const QString JSONdata)
         emit viewHandler(MODEL_INIT_COMRLETED);
         break;
     }
+    case VIEW_GAZE_POINT_TEST_WIDGET_READY:
+    {
+        // отправляем запрос в модель для активации айТрекера.
+        emit modelHandler(EYE_TRACKER_START_TRACKING);
+        //
+        break;
+    }
+    case EYE_TRACKER_STARTED_TRACKING:
+    {
+        emit viewHandler(EYE_TRACKER_STARTED_TRACKING);
+        break;
+    }
+    case VIEW_CLOSE_GAZE_POINT_TEST:
+    {
+        emit modelHandler(EYE_TRACKER_STOP_TRACKING);
+        break;
+    }
+    //case EYE_TRACKER_READY:{break;}
     case APP_EXIT:
         emit appExit();
         break;

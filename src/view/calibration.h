@@ -48,12 +48,9 @@ private:
     QRect circleRect;
     QRect spriteFrame;
 
-
     void makeSprite();
     void viewStartButtonWidget();
     void openCalibrationWidget();
-
-
 };
 
 #endif // CALIBRATION_H

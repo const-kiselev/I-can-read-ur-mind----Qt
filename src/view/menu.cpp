@@ -55,6 +55,8 @@ void Menu::addEyeTrackerActions()
 
    connect(pcmd1, &QPushButton::clicked, this,
            [=](){emit sendSignal(MENU_OPEN_EYE_TRACKER_CALIBRATION_WIDGET); });
+   connect(pcmd2, &QPushButton::clicked, this,
+           [=](){emit sendSignal(MENU_OPEN_GAZE_POINT_TEST_WIDGET); });
 
 }
 

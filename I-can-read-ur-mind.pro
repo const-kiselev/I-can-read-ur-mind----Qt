@@ -31,6 +31,7 @@ SOURCES += \
     src/model/eye-tracker.cpp \
     src/view/menu.cpp \
     src/view/calibration.cpp \
+    src/view/gaze-point-test.cpp \
     src/model.cpp \
     src/view.cpp \
     src/controller.cpp \
@@ -46,7 +47,8 @@ HEADERS += \
     src/view.h \
     src/controller.h \
     src/model/tests-controller.h \
-    src/view/test-view.h
+    src/view/test-view.h \
+    src/view/gaze-point-test.h
 
 #FORMS +=
 
