@@ -136,7 +136,8 @@ void Model::handler(const ResponseAnswer_ENUM cmd, const QString&JSONdata)
     }
     case MODEL_SET_GAZE_POINT_DESTINATION_notJSON_d:
     {
-        gazePointDestination = (ResponseAnswer_ENUM)JSONdata.toInt();
+        //gazePointDestination = (ResponseAnswer_ENUM)JSONdata.toInt();
+        gazePointDestination = MODEL_SET_GAZE_POINT_DESTINATION_notJSON_d;
         break;
     }
     case EYE_TRACKER_START_TRACKING:

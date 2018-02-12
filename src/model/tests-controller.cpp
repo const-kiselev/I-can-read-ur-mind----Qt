@@ -258,7 +258,7 @@ ResponseAnswer_ENUM TestModel::unload()
 void TestModel::setPointToROIsAnalysis(QPoint inPoint)
 {
     /// происходит проход по всем элементам вектора с ROI-облостями
-
+    qDebug() << "TestModel::setPointToROIsAnalysis " << inPoint;
     foreach (ROI_TestModel tmpROI, _ROIsVector) {
         if( (inPoint.x() >= tmpROI.position.x()) &&
                 (inPoint.y() >= tmpROI.position.y()) )
@@ -266,12 +266,15 @@ void TestModel::setPointToROIsAnalysis(QPoint inPoint)
             if( (inPoint.x() <= tmpROI.points.at(0).x()) &&
                     (inPoint.y() <= tmpROI.points.at(0).y()) )
             {
+                qDebug() << "Point in ROI with ID " << tmpROI.ID;
                 if(tmpROI.NOTforEyeTrackerFixation)
                     return;
                 if(!outPutStream)
                     qDebug() << "Point in ROI with ID " << tmpROI.ID;
-                else
+                else{
                     *outPutStream << "ROI: " << tmpROI.ID << "\n"; // todo: необходимо модернизировать
+                    qDebug() << "Point in ROI with ID " << tmpROI.ID;
+                }
             }
         }
     }
@@ -378,97 +381,9 @@ void TestModel::readXML()
     if(xml.hasError())
         qDebug() << "Error while XML reading:" << xml.errorString();
 
+    foreach (ROI_TestModel tmpROI, _ROIsVector) {
+        qDebug() << "ID = " << tmpROI.ID <<  " pos.x="<< tmpROI.position.x() << " pos.y="<<tmpROI.position.y()
+                 << " points[0].x="<< tmpROI.points.at(0).x() << "points[0].y="  <<tmpROI.points.at(0).y();
+    }
+
 }
-
-//void demoLoadROIs()
-//{
-//    ROI_TestModel tmpROI;
-//    tmpROI.ID = _ROIsVector.length();
-//    tmpROI.type = ROI_rect;
-//    tmpROI.points.push_back(QPoint(318,384));
-//    tmpROI.position = QPoint(140,14);
-//   _ROIsVector.push_back(tmpROI);
-//    tmpROI.points.clear();
-
-//    tmpROI.ID = _ROIsVector.length();
-//    tmpROI.type = ROI_rect;
-//    tmpROI.points.push_back(QPoint(298,48));
-//    tmpROI.position = QPoint(475,14);
-//   _ROIsVector.push_back(tmpROI);
-//    tmpROI.points.clear();
-
-//    tmpROI.ID = _ROIsVector.length();
-//    tmpROI.type = ROI_rect;
-//    tmpROI.points.push_back(QPoint(197,50));
-//    tmpROI.position = QPoint(466,69);
-//   _ROIsVector.push_back(tmpROI);
-//    tmpROI.points.clear();
-
-//    tmpROI.ID = _ROIsVector.length();
-//    tmpROI.type = ROI_rect;
-//    tmpROI.points.push_back(QPoint(319,48));
-//    tmpROI.position = QPoint(502,125);
-//   _ROIsVector.push_back(tmpROI);
-//    tmpROI.points.clear();
-
-//    tmpROI.ID = _ROIsVector.length();
-//    tmpROI.type = ROI_rect;
-//    tmpROI.points.push_back(QPoint(437,103));
-//    tmpROI.position = QPoint(502,182);
-
-//   _ROIsVector.push_back(tmpROI);
-//    tmpROI.points.clear();
-
-//    tmpROI.ID = _ROIsVector.length();
-//    tmpROI.type = ROI_rect;
-//    tmpROI.points.push_back(QPoint(214,49));
-//    tmpROI.position = QPoint(502,293);
-
-//   _ROIsVector.push_back(tmpROI);
-//    tmpROI.points.clear();
-
-//    tmpROI.ID = _ROIsVector.length();
-//    tmpROI.type = ROI_rect;
-//    tmpROI.points.push_back(QPoint(211,50));
-//    tmpROI.position = QPoint(536,348);
-
-//   _ROIsVector.push_back(tmpROI);
-//    tmpROI.points.clear();
-
-//    tmpROI.ID = _ROIsVector.length();
-//    tmpROI.type = ROI_rect;
-//    tmpROI.points.push_back(QPoint(236,106));
-//    tmpROI.position = QPoint(595,403);
-//   _ROIsVector.push_back(tmpROI);
-//    tmpROI.points.clear();
-
-//    tmpROI.ID = _ROIsVector.length();
-//    tmpROI.type = ROI_rect;
-//    tmpROI.NOTforEyeTrackerFixation = true;
-//    tmpROI.points.push_back(QPoint(65,104));
-//    tmpROI.position = QPoint(497,515);
-//   _ROIsVector.push_back(tmpROI);
-//    tmpROI.points.clear();
-
-//    tmpROI.ID = _ROIsVector.length();
-//    tmpROI.type = ROI_rect;
-//    tmpROI.points.push_back(QPoint(807,103));
-//    tmpROI.position = QPoint(497,625);
-//   _ROIsVector.push_back(tmpROI);
-//    tmpROI.points.clear();
-
-//    tmpROI.ID = _ROIsVector.length();
-//    tmpROI.type = ROI_rect;
-//    tmpROI.points.push_back(QPoint(158,40));
-//    tmpROI.position = QPoint(495,740);
-//   _ROIsVector.push_back(tmpROI);
-//    tmpROI.points.clear();
-
-//    tmpROI.ID = _ROIsVector.length();
-//    tmpROI.type = ROI_rect;
-//    tmpROI.NOTforEyeTrackerFixation = true;
-//    tmpROI.points.push_back(QPoint(27,47));
-//    tmpROI.position = QPoint(471,792);
-//   _ROIsVector.push_back(tmpROI);
-//    tmpROI.points.clear();
-//}

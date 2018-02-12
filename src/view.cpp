@@ -169,6 +169,7 @@ void View::handler(const ResponseAnswer_ENUM cmd, const QString JSONdata)
         int spacePos = JSONdata.indexOf(" ");
         double xValue = JSONdata.mid(0,spacePos).toDouble(),
                 yValue = JSONdata.mid(spacePos+1, JSONdata.length()-spacePos-1).toDouble();
+        qDebug() << "MODEL_RAW_GAZE_POINT_notJSON_d x = " << xValue << " " << yValue;
         _gazePointTest->moveTo(xValue, yValue);
         break;
     }

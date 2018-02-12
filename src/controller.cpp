@@ -80,6 +80,7 @@ void Controller::handler(const ResponseAnswer_ENUM cmd, const QString JSONdata)
     {
         // отправляем запрос в модель для активации айТрекера.
         emit modelHandler(EYE_TRACKER_START_TRACKING);
+        emit modelHandler(MODEL_SET_GAZE_POINT_DESTINATION_notJSON_d); // переделать, должен отправлять номер destination
         //
         break;
     }

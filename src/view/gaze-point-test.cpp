@@ -1,7 +1,7 @@
 #include "gaze-point-test.h"
 
 GazePointTest::GazePointTest(QWidget *parent) : QWidget(parent), circlePixmap(nullptr),
-    propertyAnimation(nullptr), wayTime(800)
+    propertyAnimation(nullptr), wayTime(0)
 {
     circleTarget = circleRect = QRect(0,0,10,10);
     circleStandartPainter = new QPainter;
@@ -16,6 +16,7 @@ void GazePointTest::moveTo(double inX, double inY)
     propertyAnimation->setEndValue(QPointF(width()*inX, height()*inY));
     propertyAnimation->setEasingCurve(QEasingCurve::InOutCubic);
     propertyAnimation->start();
+    qDebug() << "GazePointTest::moveTo x = " << width()*inX << " y = " << height()*inY;
 }
 
 void GazePointTest::paintEvent(QPaintEvent *)

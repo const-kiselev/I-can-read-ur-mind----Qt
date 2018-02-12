@@ -138,6 +138,7 @@ int EyeTracker::calibrate()
     /* The calibration is done. Leave calibration mode. */
     status = tobii_research_screen_based_calibration_leave_calibration_mode(eye_tracker);
     //if(status);
+    calibrate_need = false;
     qDebug() << QString("Left calibration mode.\n");
     emit sendSignal(EYE_TRACKER_LEAVE_CALIBRATION_MODE);
     return 0;
@@ -156,7 +157,6 @@ int EyeTracker::startTracking()
         return EYE_TRACKER_NEED_CALIBRATE;
     if(tracking_active)
         return EYE_TRACKER_BUSY_WITH_TRACKING;
-
     tracking_active = true;
 
 #ifdef NO_EYE_TRACKER_TEST
@@ -169,13 +169,13 @@ int EyeTracker::startTracking()
     status = tobii_research_subscribe_to_gaze_data(eye_tracker,gazeDataCallback, &lastGazeData);
     if (status != TOBII_RESEARCH_STATUS_OK)
         return EYE_TRACKER_PROBLEM_WITH_TRACKING_START;
-
     QPointF tmpPoint;
     while(tracking_active){
         //boost::this_thread::sleep_for(boost::chrono::milliseconds(360));
         currentGazePoint = getAvrCurrentData();
         calculate();
         //emit sendGazePoint(tmpPoint.x(), tmpPoint.y());
+        Sleep(uint(200));
     }
     return 0;
 }
