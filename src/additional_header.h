@@ -9,6 +9,7 @@
 
 #define NO_ET true
 #define NO_EYE_TRACKER_TEST
+#define ADMIN_MODULE true
 
 
 QString JSONtoStr(QJsonObject inJson);
@@ -49,6 +50,8 @@ typedef enum {
     MENU_ADD_TEST_d,
     MENU_OPEN_WIDGET_d,
     MENU_OPEN_TEST_d,
+    MENU_ADD_ADMIN_BUTTON,
+    MENU_OPEN_ADMIN_MODULE,
 
     CONTROLLER_ALL_GADGETS_SUCESSFULL_INITED,
     CONTROLLER_CALIBRATION_WIDGET_CLICKED_START,
@@ -67,6 +70,8 @@ typedef enum {
     VIEW_GAZE_POINT_TEST_WIDGET_READY,
     VIEW_SHOW_ADDED_WIDGET,
     VIEW_CLOSE_GAZE_POINT_TEST,
+    VIEW_ADMIN_MODULE_DATA_d,
+    VIEW_ADMIN_MODULE_UPDATE_DATA,
 
 
     VIEW_WINDOW_SIZE_d,
@@ -88,6 +93,9 @@ typedef enum {
     MODEL_TEST_WAS_DELETED_d,
     MODEL_RAW_GAZE_POINT_notJSON_d,
     MODEL_SET_GAZE_POINT_DESTINATION_notJSON_d,
+    MODEL_ADMIN_MODULE_CREATED,
+    MODEL_ADMIN_MODULE_INIT,
+    MODEL_ADMIN_MODULE_DATA_d,
 
     TESTS_CONTROLLER_LIST_WITH_TESTS_WAS_UPD,
 
@@ -130,6 +138,48 @@ struct TestRepresinatationData{
     QVector<ROI_VectorElement> ROIsVector;
     QRect dividedLine;
     QString testStyle;
+};
+
+struct TestData{
+    int ID;
+    QString name;
+    QString shortInfo;
+    bool active;
+    TestData(int ID, QString name, QString shortInfo, bool active)
+    {
+        this->ID = ID;
+        this->name = name;
+        this->shortInfo = shortInfo;
+        this->active = active;
+    }
+    void changeActive(){
+        this->active = !this->active;
+    }
+    void changeActive(bool active){
+        this->active = active;
+    }
+    void setData(int ID, QString name, QString shortInfo, bool active = false)
+    {
+        this->ID = ID;
+        this->name = name;
+        this->shortInfo = shortInfo;
+        this->active = active;
+    }
+    static QList<TestData> getListOfActiveTests(QList<TestData> *list){
+        QList<TestData> res;
+        foreach (TestData testData, *list)
+            if(testData.active)
+                res.append(testData);
+        return res;
+    }
+    static QString toJSONstring(TestData* test){
+        QJsonObject json;
+        json["ID"] = test->ID;
+        json["name"] = test->name;
+        json["shortInfo"] = test->shortInfo;
+        json["active"] = test->active;
+        return JSONtoStr(json);
+    }
 };
 
 Q_DECLARE_METATYPE(ResponseAnswer_ENUM)

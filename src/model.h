@@ -6,6 +6,7 @@
 #include "src/additional_header.h"
 #include "src/model/eye-tracker.h"
 #include "src/model/tests-controller.h"
+#include "src/model/admin.h"
 #include <QDateTime>
 
 class Model : public QObject
@@ -24,6 +25,7 @@ public slots:
 private:
     EyeTracker *_eyeTracker;
     TestsController *_testsController;
+    Admin *_admin;
     QObject *_userController;
 
     void init();

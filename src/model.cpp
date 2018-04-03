@@ -82,7 +82,6 @@ void Model::handler(const ResponseAnswer_ENUM cmd, const QString&JSONdata)
         emit controllerHandler(resp);
         if(resp != MODEL_TESTS_CONTROLLER_LOADED)
             break;
-        QString tmpRespStrT;
         QJsonObject respJson;
         respJson["testPath"] = _testsController->getTestXMLfileLink();
         emit controllerHandler(MODEL__TEST_PATH_d, JSONtoStr(respJson));
@@ -161,6 +160,11 @@ void Model::handler(const ResponseAnswer_ENUM cmd, const QString&JSONdata)
         closeFile();
         break;
     }
+    case MODEL_ADMIN_MODULE_INIT:
+    {
+        emit controllerHandler(MODEL_ADMIN_MODULE_DATA_d, JSONtoStr(_admin->getAllFields()));
+        break;
+    }
     default:
         break;
     }
@@ -206,6 +210,12 @@ void Model::init()
     else{
         emit viewHandler(ERROR_MODEL_EYE_TRACKER_INIT);
         qDebug() << "ERROR_MODEL_EYE_TRACKER_INIT";
+    }
+    if(ADMIN_MODULE){
+        _admin = new Admin();
+        _admin->setTestList(_testsController->getListOfTests());
+        emit controllerHandler(MODEL_ADMIN_MODULE_CREATED);
+        // todo: необходимо отсылать сообщение о добавлении в меню
     }
 }
 

@@ -9,6 +9,7 @@
 #include "src/view/calibration.h"
 #include "src/view/test-view.h"
 #include "src/view/gaze-point-test.h"
+#include "src/view/admin-view.h"
 
 class View : public QObject
 {
@@ -29,6 +30,7 @@ private:
     Calibration *_eyeTrackerCalibrationWidget;
     TestView *_testView;
     GazePointTest *_gazePointTest;
+    AdminView *_adminView;
 };
 
 #endif // VIEW_H

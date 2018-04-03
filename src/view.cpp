@@ -183,6 +183,23 @@ void View::handler(const ResponseAnswer_ENUM cmd, const QString JSONdata)
         _gazePointTest = nullptr;
         break;
     }
+    case MENU_ADD_ADMIN_BUTTON:
+    {
+        _menu->addItem("Администрирование", MENU_OPEN_ADMIN_MODULE);
+        break;
+    }
+    case MENU_OPEN_ADMIN_MODULE:
+    {
+        _mainWindow->showLoadingWidget();
+        _adminView = new AdminView();
+        emit controllerHandler(MENU_OPEN_ADMIN_MODULE);
+        break;
+    }
+    case VIEW_ADMIN_MODULE_DATA_d:
+    {
+        _adminView ->AddData(JSONdata);
+        break;
+    }
     case APP_EXIT:
     {
         emit controllerHandler(APP_EXIT);

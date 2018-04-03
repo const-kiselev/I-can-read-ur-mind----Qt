@@ -95,6 +95,20 @@ void Controller::handler(const ResponseAnswer_ENUM cmd, const QString JSONdata)
         break;
     }
     //case EYE_TRACKER_READY:{break;}
+    case MODEL_ADMIN_MODULE_CREATED: {
+        emit viewHandler(MENU_ADD_ADMIN_BUTTON);
+        break;
+    }
+    case MENU_OPEN_ADMIN_MODULE:
+    {
+        emit modelHandler(MODEL_ADMIN_MODULE_INIT);
+        break;
+    }
+    case MODEL_ADMIN_MODULE_DATA_d:
+    {
+        emit viewHandler(VIEW_ADMIN_MODULE_DATA_d, JSONdata);
+        break;
+    }
     case APP_EXIT:
         emit appExit();
         break;

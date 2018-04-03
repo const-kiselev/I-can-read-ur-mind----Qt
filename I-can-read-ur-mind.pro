@@ -10,6 +10,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = I-can-read-ur-mind
 TEMPLATE = app
+CONFIG+= static
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings
@@ -35,7 +36,9 @@ SOURCES += \
     src/model.cpp \
     src/view.cpp \
     src/controller.cpp \
-    src/model/tests-controller.cpp
+    src/model/tests-controller.cpp \
+    src/model/admin.cpp \
+    src/view/admin-view.cpp
 
 HEADERS += \
     src/view/main-window.h \
@@ -48,7 +51,9 @@ HEADERS += \
     src/controller.h \
     src/model/tests-controller.h \
     src/view/test-view.h \
-    src/view/gaze-point-test.h
+    src/view/gaze-point-test.h \
+    src/model/admin.h \
+    src/view/admin-view.h
 
 #FORMS +=
 
