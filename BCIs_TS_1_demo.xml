@@ -10,77 +10,153 @@
 	<Problem>
 		<Title>Совершенное число 1</Title>
 		<Task>Q1. Данная программа должна определить, является ли входное число совершенным (целое положительное число, которое является суммой своих делителей. 6 — совершенное число, т.к. 6 = 1+2+3). Необходимо найти три возможные ошибки в коде.</Task>
-		<ROI>
+		<Area>
 			<ID>0</ID>
 			<Position y="14" x="140"/>
 			<Content>Q1. Данная программа должна определить, является ли входное число совершенным (целое положительное число, которое является суммой своих делителей. 6 — совершенное число, т.к. 6 = 1+2+3). Необходимо найти три возможные ошибки в коде.</Content>
 			<Point x="318" y="420"/>
-		</ROI>
-		<ROI>
+		</Area>
+		<Area>
 			<ID>1</ID>
 			<Position y="14" x="475"/>
 			<Content>#include &lt;stdio.h&gt;</Content>
 			<Point y="48" x="298"/>
-		</ROI>
-		<ROI>
+		</Area>
+		<Area>
 			<ID>2</ID>
 			<Position y="69" x="466"/>
 			<Content>int main(){</Content>
 			<Point y="50" x="197"/>
-		</ROI>
-		<ROI>
+		</Area>
+		<Area>
 			<ID>3</ID>
 			<Position y="125" x="502"/>
 			<Content>int n, i=1, sum=0;</Content>
 			<Point y="48" x="319"/>
-		</ROI>
-		<ROI>
+		</Area>
+		<Area>
 			<ID>4</ID>
 			<Position y="182" x="502"/>
 			<Content>printf("Enter a number: "); scanf("%d",n);</Content>
 			<Point y="103" x="437"/>
-		</ROI>
-		<ROI>
+		</Area>
+		<Area>
 			<ID>5</ID>
 			<Position y="293" x="502"/>
 			<Content>while(i&lt;=n){</Content>
 			<Point y="49" x="214"/>
-		</ROI>
-		<ROI>
+		</Area>
+		<Area>
 			<ID>6</ID>
 			<Position y="348" x="536"/>
 			<Content>if(i%n==0){</Content>
 			<Point y="50" x="211"/>
-		</ROI>
-		<ROI>
+		</Area>
+		<Area>
 			<ID>7</ID>
 			<Position y="403" x="595"/>
 			<Content>sum=sum+i;\ni++;</Content>
 			<Point y="106" x="236"/>
-		</ROI>
-		<ROI eyeTrackingIgnore="true">
+		</Area>
+		<Area eyeTrackingIgnore="true">
 			<ID>8</ID>
 			<Position y="515" x="497"/>
 			<Content>    }\n}</Content>
 			<Point y="104" x="65"/>
-		</ROI>
-		<ROI>
+		</Area>
+		<Area>
 			<ID>9</ID>
 			<Position y="625" x="497"/>
 			<Content>if(sum==n)   printf(“%d is a perfect number”, i); \nelse   print(“%d is not a perfect number”);</Content>
 			<Point y="103" x="807"/>
-		</ROI>
-		<ROI>
+		</Area>
+		<Area>
 			<ID>10</ID>
 			<Position y="740" x="495"/>
 			<Content>return 0;</Content>
 			<Point y="40" x="158"/>
-		</ROI>
-		<ROI eyeTrackingIgnore="true">
+		</Area>
+		<Area eyeTrackingIgnore="true">
 			<ID>11</ID>
 			<Position y="792" x="471"/>
 			<Content>}</Content>
 			<Point y="47" x="27"/>
-		</ROI>
+		</Area>
+	</Problem>
+	<Problem>
+		<Title>Совершенное число 2</Title>
+		<Task>Q1. Данная программа должна определить, является ли входное число совершенным (целое положительное число, которое является суммой своих делителей. 6 — совершенное число, т.к. 6 = 1+2+3). Необходимо найти три возможные ошибки в коде.</Task>
+		<Area>
+			<ID>0</ID>
+			<Position y="14" x="140"/>
+			<Content>Q2 . Данная программа должна определить, является ли входное число совершенным (целое положительное число, которое является суммой своих делителей. 6 — совершенное число, т.к. 6 = 1+2+3). Необходимо найти три возможные ошибки в коде.</Content>
+			<Point x="318" y="420"/>
+		</Area>
+		<Area>
+			<ID>1</ID>
+			<Position y="14" x="475"/>
+			<Content>#include &lt;stdio.h&gt;</Content>
+			<Point y="48" x="298"/>
+		</Area>
+		<Area>
+			<ID>2</ID>
+			<Position y="69" x="466"/>
+			<Content>int main(){</Content>
+			<Point y="50" x="197"/>
+		</Area>
+		<Area>
+			<ID>3</ID>
+			<Position y="125" x="502"/>
+			<Content>int n, i=1, sum=0;</Content>
+			<Point y="48" x="319"/>
+		</Area>
+		<Area>
+			<ID>4</ID>
+			<Position y="182" x="502"/>
+			<Content>printf("Enter a number: "); scanf("%d",n);</Content>
+			<Point y="103" x="437"/>
+		</Area>
+		<Area>
+			<ID>5</ID>
+			<Position y="293" x="502"/>
+			<Content>while(i&lt;=n){</Content>
+			<Point y="49" x="214"/>
+		</Area>
+		<Area>
+			<ID>6</ID>
+			<Position y="348" x="536"/>
+			<Content>if(i%n==0){</Content>
+			<Point y="50" x="211"/>
+		</Area>
+		<Area>
+			<ID>7</ID>
+			<Position y="403" x="595"/>
+			<Content>sum=sum+i;\ni++;</Content>
+			<Point y="106" x="236"/>
+		</Area>
+		<Area eyeTrackingIgnore="true">
+			<ID>8</ID>
+			<Position y="515" x="497"/>
+			<Content>    }\n}</Content>
+			<Point y="104" x="65"/>
+		</Area>
+		<Area>
+			<ID>9</ID>
+			<Position y="625" x="497"/>
+			<Content>if(sum==n)   printf(“%d is a perfect number”, i); \nelse   print(“%d is not a perfect number”);</Content>
+			<Point y="103" x="807"/>
+		</Area>
+		<Area>
+			<ID>10</ID>
+			<Position y="740" x="495"/>
+			<Content>return 0;</Content>
+			<Point y="40" x="158"/>
+		</Area>
+		<Area eyeTrackingIgnore="true">
+			<ID>11</ID>
+			<Position y="792" x="471"/>
+			<Content>}</Content>
+			<Point y="47" x="27"/>
+		</Area>
 	</Problem>
 </BCI_Test>

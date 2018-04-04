@@ -13,7 +13,7 @@
 				<xs:element ref="Information"/>
 				<xs:element ref="Style"/>
 				<xs:element ref="ProblemOrder"/>
-				<xs:element ref="Problem"/>
+				<xs:element ref="Problem" maxOccurs="unbounded"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -53,6 +53,7 @@
 				<xs:element ref="Task"/>
 				<xs:element ref="Area" maxOccurs="unbounded"/>
 				<xs:element ref="Answer" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="EntryForm" minOccurs="0"/>
 			</xs:sequence>
 			<xs:attribute name="answertType">
 				<xs:simpleType>
@@ -93,7 +94,7 @@
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:attribute>
-			<xs:attribute name="ROI" type="xs:boolean" use="required"/>
+			<xs:attribute name="ROI" type="xs:boolean" use="optional"/>
 			<xs:attribute name="inputID"/>
 		</xs:complexType>
 	</xs:element>
@@ -132,6 +133,13 @@
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="EntryForm">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="Area"/>
+			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
 </xs:schema>
