@@ -98,9 +98,9 @@ QList<ViewTestElement> TestsController::getListOfTests()
 {
     QList<ViewTestElement> resList;
     ViewTestElement tmpViewTestElement;
-
     foreach(TestFileData testData, testsFilesList)
     {
+        qDebug() << "QList<ViewTestElement> TestsController::getListOfTests(): " << testData.name;
         tmpViewTestElement.ID = testData.ID;
         tmpViewTestElement.name = testData.name;
         resList.append(tmpViewTestElement);

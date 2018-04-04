@@ -30,5 +30,5 @@ ResponseAnswer_ENUM AdminView::addData(const QString JSONdata)
 
 ResponseAnswer_ENUM AdminView::draw()
 {
-
+    return OK_ANSWER;
 }

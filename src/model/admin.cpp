@@ -30,11 +30,12 @@ QJsonObject Admin::getListOfTests()
     QJsonObject jsonObj, tmpJsonObj;
     int i=0;
     foreach (TestData test, this->listOfTests) {
+        qDebug() << "QJsonObject Admin::getListOfTests(): " << test.ID;
         tmpJsonObj["ID"] = test.ID;
         tmpJsonObj["name"] = test.name;
         tmpJsonObj["shortInfo"] = test.shortInfo;
         tmpJsonObj["active"] = test.active;
-        jsonObj[i] = JSONtoStr(tmpJsonObj);
+        jsonObj[QString::number(i)] = JSONtoStr(tmpJsonObj);
     }
     return jsonObj;
 }

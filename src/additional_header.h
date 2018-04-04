@@ -146,6 +146,7 @@ struct TestData{
     QString name;
     QString shortInfo;
     bool active;
+    TestData(){}
     TestData(int ID, QString name, QString shortInfo, bool active)
     {
         this->ID = ID;
