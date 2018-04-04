@@ -144,7 +144,6 @@ void View::handler(const ResponseAnswer_ENUM cmd, const QString JSONdata)
         _mainWindow->showLastAddedWidget();
         break;
     }
-
     case EYE_TRACKER_STARTED_TRACKING:
     {
         if(_gazePointTest)
@@ -197,8 +196,18 @@ void View::handler(const ResponseAnswer_ENUM cmd, const QString JSONdata)
     }
     case VIEW_ADMIN_MODULE_DATA_d:
     {
-        _adminView ->AddData(JSONdata);
+        if(_adminView ->addData(JSONdata) == VIEW_ADMIN_MODULE_LADED)
+        {
+            _adminView->draw();
+            _mainWindow->addInViewStack(_adminView);
+            _mainWindow->addButton("Выйти", QPoint(0,0), _adminView, false, VIEW_ADMIN_MODULE_CLOSE_WIDGET);
+            handler(VIEW_SHOW_ADDED_WIDGET);
+        }
         break;
+    }
+    case VIEW_ADMIN_MODULE_CLOSE_WIDGET:
+    {
+        // todo: !!!!!
     }
     case APP_EXIT:
     {

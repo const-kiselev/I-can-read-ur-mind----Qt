@@ -7,7 +7,7 @@ AdminView::AdminView(QWidget *parent) : QWidget(parent)
     listOfTests = new QListWidget();
 }
 
-void AdminView::AddData(const QString JSONdata)
+ResponseAnswer_ENUM AdminView::addData(const QString JSONdata)
 {
     QJsonObject json = JSON_fromStr(JSONdata), jsonAllTests;
     QListWidgetItem *listItem;
@@ -16,13 +16,19 @@ void AdminView::AddData(const QString JSONdata)
     listOfTests->clear();
     userName->setText(json["userName"].toString());
     userInfo->setText(json["userInfo"].toString());
-    jsonAllTests = JSON_fromStr(json["allTests"]);
+    jsonAllTests = JSON_fromStr(json["allTests"].toString());
     int n = jsonAllTests.length();
     for(int i=0; i<n; i++)
     {
         QJsonObject test = JSON_fromStr(jsonAllTests[QString::number(i)].toString());
         listItem = new QListWidgetItem(test["name"].toString(), listOfTests);
         listItem->setFlags(listItem->flags() | Qt::ItemIsUserCheckable);
-        listItem->setCheckState(test["active"].toBool(), Qt::Checked);
+        //listItem->setCheckState(test["active"].toBool());
     }
+    return VIEW_ADMIN_MODULE_LADED;
+}
+
+ResponseAnswer_ENUM AdminView::draw()
+{
+
 }

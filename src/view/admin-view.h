@@ -11,7 +11,8 @@ class AdminView : public QWidget
     Q_OBJECT
 public:
     explicit AdminView(QWidget *parent = nullptr);
-    void AddData(const QString JSONdata);
+    ResponseAnswer_ENUM addData(const QString JSONdata);
+    ResponseAnswer_ENUM draw();
 signals:
     void sendSignal(const ResponseAnswer_ENUM cmd, const QString JSONdata = "");
 private:
