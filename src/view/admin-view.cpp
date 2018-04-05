@@ -13,7 +13,7 @@ AdminView::AdminView(QWidget *parent) : QWidget(parent)
     centerWidget->setMaximumWidth(300);
 
     userName = new QLineEdit();
-    QLabel *userNameLablel = new QLabel("&ФИО тестируемого:");
+    QLabel *userNameLablel = new QLabel("&Идентификатор тестируемого:");
     userNameLablel->setBuddy(userName);
     userInfo = new QTextEdit();
     QLabel *userInfoLablel = new QLabel("&Данные о тестируемом:");

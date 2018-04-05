@@ -92,7 +92,10 @@ void Model::handler(const ResponseAnswer_ENUM cmd, const QString&JSONdata)
         qDebug() << _testsController->startTest();
             /// открываем новый файл для записи RAW-данных трекинга
         // todo: после добавления класса с юзером, необходимо будет указать его ID в файле!
-        openFile(QDateTime::currentDateTime().toString("yy_MM_dd_hh_mm_ss_zzz_")+QString("testID_")+QString::number(_testsController->getActiveTestID()));
+        QString userName = "";
+        if(_admin)
+            userName = _admin->getName();
+        openFile(QDateTime::currentDateTime().toString("yy_MM_dd_hh_mm_ss_zzz_")+_testsController->getTestXMLfileLink()+"_"+userName);
         setStreamForTracking(); // устанавливаем для айТрекера стрим для вывода RAW данных непосредственно в файл
             /// соединяем сигнал об изменении GazePoint с контроллером тестов, который определяет алгоритм анализа данных
         connect(_eyeTracker, SIGNAL(sendGazePoint(double,double)),

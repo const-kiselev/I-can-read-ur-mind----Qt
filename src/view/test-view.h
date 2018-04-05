@@ -18,12 +18,13 @@ signals:
 private:
     bool testLoaded;
     QFile *xmlFile; // new. Delete QString address;
-    QQueue<QWidget*> queueOfProblemsWidgets;
+    QQueue<QWidget*> queueOfProblemsWidgets, queueOfAnswersWidgets;
+    QList<QWidget*> listOfAnswerFields;
 
     void demoLoad();
     bool _demo;
     TestRepresinatationData *_testView;
-    void drawROI(ROI_VectorElement &inROI);
+    void drawArea(ROI_VectorElement &inROI, bool inEntryForm);
     void readXML();
     void readProblemTag(QXmlStreamReader&xml);
     bool first;

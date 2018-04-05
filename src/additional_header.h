@@ -147,7 +147,10 @@ struct ROI_VectorElement{
     QPointF position;
     QString content;
     QString style; // ToDo: посмотреть, мб в Qt есть тип связанный со стилем lable
-    ROI_VectorElement():NOTforEyeTrackerFixation(false){}
+    QString inputType;
+    int inputID;
+    bool ROI;
+    ROI_VectorElement():NOTforEyeTrackerFixation(false),ROI(true){}
 };
 
 struct TestRepresinatationData{

@@ -94,8 +94,18 @@
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:attribute>
-			<xs:attribute name="ROI" type="xs:boolean" use="optional"/>
-			<xs:attribute name="inputID"/>
+			<xs:attribute name="ROI" type="xs:boolean" use="optional" default="true"/>
+			<xs:attribute name="inputID" type="xs:int"/>
+			<xs:attribute name="inputType">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="checkbox"/>
+						<xs:enumeration value="radio"/>
+						<xs:enumeration value="button"/>
+						<xs:enumeration value="text"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="Content">

@@ -11,7 +11,7 @@ class Admin : public QObject
     Q_OBJECT
 public:
     explicit Admin(QObject *parent = nullptr);
-    QString getName();
+    QString getName() {return userName;}
     QJsonObject getListOfTests();
     bool checkHash(int password);
     void setHash(int hash);
