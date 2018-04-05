@@ -4,10 +4,6 @@ Menu::Menu(QWidget *parent) :
     QWidget(parent)
 {
     init();
-
-
-    setStyleSheet("background-color:white;");
-    setStyleSheet("QPushButton{}");
 }
 
 Menu::~Menu()
@@ -31,14 +27,6 @@ void Menu::init()
     img->setMinimumWidth(200);
     menuLayout->setStretchFactor(img, 5);
     menuList->layout()->setAlignment(img, Qt::AlignTop|Qt::AlignHCenter);
-
-    QPushButton *pcmd1 = new QPushButton("Выйти");
-    pcmd1->setMinimumWidth(300);
-    menuList->layout()->addWidget(pcmd1);
-    menuList->layout()->setAlignment(pcmd1, Qt::AlignCenter);
-    connect(pcmd1, &QPushButton::clicked, this,
-            [=](){emit sendSignal(APP_EXIT); });
-
 }
 
 void Menu::addEyeTrackerActions()
@@ -60,6 +48,8 @@ void Menu::addEyeTrackerActions()
 
 }
 
+
+
 void Menu::addItem(QString title, ResponseAnswer_ENUM respSignal, QString JsonResInStr)
 {
     QPushButton *pcmd1 = new QPushButton(title);
@@ -69,6 +59,27 @@ void Menu::addItem(QString title, ResponseAnswer_ENUM respSignal, QString JsonRe
 
     connect(pcmd1, &QPushButton::clicked, this,
             [=](){emit sendSignal(respSignal, JsonResInStr); });
+}
+
+void Menu::addWidget(QWidget *wdg)
+{
+    menuList->layout()->addWidget(wdg);
+    menuList->layout()->setAlignment(wdg, Qt::AlignCenter);
+}
+
+void Menu::clear()
+{
+    if ( menuList->layout() != NULL )
+    {
+        QLayoutItem* item;
+        while ( ( item = menuList->layout()->takeAt( 0 ) ) != NULL )
+        {
+            delete item->widget();
+            delete item;
+        }
+        delete menuList->layout();
+    }
+    menuList->setLayout(new QVBoxLayout);
 }
 
 

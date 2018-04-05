@@ -19,6 +19,7 @@ void View::init()
     _mainWindow->showFullScreen();
     _mainWindow->showLoadingWidget();
     _menu = new Menu();
+    _menu->addItem("Выйти", APP_EXIT);
     qDebug() << "_mainWindow width = " << _mainWindow->width() << " height = " << _mainWindow->height();
     _menu->resize(_mainWindow->width(), _mainWindow->height());
     connect(_menu, SIGNAL(sendSignal(const ResponseAnswer_ENUM, const QString)),
@@ -95,7 +96,7 @@ void View::handler(const ResponseAnswer_ENUM cmd, const QString JSONdata)
     }
     case EYE_TRACKER_LEAVE_CALIBRATION_MODE:
     {
-        _mainWindow->showWidgetFromStack(_menu);
+        _mainWindow->removeFromStack(_eyeTrackerCalibrationWidget);
         delete _eyeTrackerCalibrationWidget;
         _eyeTrackerCalibrationWidget = nullptr;
         break;
@@ -192,11 +193,13 @@ void View::handler(const ResponseAnswer_ENUM cmd, const QString JSONdata)
         _mainWindow->showLoadingWidget();
         _adminView = new AdminView();
         emit controllerHandler(MENU_OPEN_ADMIN_MODULE);
+        connect(_adminView, SIGNAL(sendSignal(const ResponseAnswer_ENUM, const QString)),
+                this, SLOT(handler(const ResponseAnswer_ENUM, const QString)));
         break;
     }
     case VIEW_ADMIN_MODULE_DATA_d:
     {
-        if(_adminView ->addData(JSONdata) == VIEW_ADMIN_MODULE_LADED)
+        if(_adminView ->addData(JSONdata) == VIEW_ADMIN_MODULE_LOADED)
         {
             _adminView->draw();
             _mainWindow->addInViewStack(_adminView);
@@ -207,7 +210,71 @@ void View::handler(const ResponseAnswer_ENUM cmd, const QString JSONdata)
     }
     case VIEW_ADMIN_MODULE_CLOSE_WIDGET:
     {
+        if(!_adminView)
+            return;
+        emit controllerHandler(VIEW_ADMIN_MODULE_UPDAT_DATA_d, JSONtoStr(_adminView->getFieldsContent()));
+        _mainWindow->removeFromStack(_adminView);
+        delete _adminView;
+        _adminView = nullptr;
+        break;
         // todo: !!!!!
+    }
+    case VIEW_ADMIN_MODULE_PRESSED_START_TEST_SESSION:
+    {
+        handler(VIEW_ADMIN_MODULE_CLOSE_WIDGET);
+        emit controllerHandler(VIEW_ADMIN_MODULE_START_TEST_SESSION);
+        break;
+    }
+    case VIEW_OPEN_TEST_SESSION_MENU:
+    {
+        _testSessionMenu = new Menu();
+        _testSessionMenu->resize(_mainWindow->width(), _mainWindow->height());
+        QLabel *greetings = new QLabel("Привет! Перед тобой будет пресдтавлена серия тестов, результаты которого помогут в научно-исследовательской работе. Не бойся, это никак не повлияет на твою успеваемость, даю слово!:) Если будут интересны результаты, просто об этом скажи администратору тестирования.\nНа каждом кадре будет инструкция, так что ты не запутаешься. \nУдачи!");
+        greetings->setMaximumWidth(500);
+        greetings->setWordWrap(true);
+        greetings->setFont(QFont( "Arial", 14, QFont::Normal));
+        greetings->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
+        _testSessionMenu->addWidget(greetings);
+        _testSessionMenu->addItem("Я готов!", VIEW_TEST_SESSION_CALIBRATION);
+        _mainWindow->addInViewStack(_testSessionMenu);
+        connect(_testSessionMenu, SIGNAL(sendSignal(const ResponseAnswer_ENUM, const QString)),
+                this, SLOT(handler(const ResponseAnswer_ENUM, const QString)));
+        handler(VIEW_SHOW_ADDED_WIDGET);
+        break;
+    }
+    case VIEW_TEST_SESSION_CALIBRATION:
+    {
+        handler(MENU_OPEN_EYE_TRACKER_CALIBRATION_WIDGET);
+        _testSessionMenu->clear();
+        QLabel *greetings = new QLabel("Ну как? Продолжим?");
+        greetings->setMaximumWidth(500);
+        greetings->setWordWrap(true);
+        greetings->setFont(QFont( "Arial", 14, QFont::Normal));
+        greetings->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
+        _testSessionMenu->addWidget(greetings);
+        _testSessionMenu->addItem("Да!", VIEW_TEST_SESSION_MENU_READY_FOR_TEST);
+        break;
+    }
+    case VIEW_TEST_PRESSED_NEXT:
+    {
+        if(_testView->draw())
+            handler(VIEW_TEST_CLOSE_TEST);
+        break;
+    }
+    case VIEW_TEST_SESSION_MENU_READY_FOR_TEST:
+    {
+        emit controllerHandler(VIEW_TEST_SESSION_MENU_READY_FOR_TEST);
+        break;
+    }
+    case VIEW_TEST_SESSION_MENU_CLOSE:
+    {
+        if(!_testSessionMenu)
+            return;
+        //emit controllerHandler(VIEW_ADMIN_MODULE_UPDAT_DATA_d, JSONtoStr(_adminView->getFieldsContent()));
+        _mainWindow->removeFromStack(_testSessionMenu);
+        delete _testSessionMenu;
+        _testSessionMenu = nullptr;
+        break;
     }
     case APP_EXIT:
     {

@@ -6,14 +6,14 @@ Calibration::Calibration(QWidget *parent) : QWidget(parent)
     calibWidgetOpen = false;
     wayTime = 800;
 
-    stLayout = new QStackedLayout;
-    QVBoxLayout *vbxLayout = new QVBoxLayout;
+    stLayout = new QStackedLayout();
+    QVBoxLayout *vbxLayout = new QVBoxLayout();
     vbxLayout->addLayout(stLayout);
     setLayout(vbxLayout);
     layout()->setAlignment(stLayout, Qt::AlignCenter);
     viewStartButtonWidget();
     // draw the pixmap of circle
-    circleStandartPainter = new QPainter;
+    circleStandartPainter = new QPainter();
     makeSprite();
 }
 
@@ -79,7 +79,7 @@ void Calibration::viewStartButtonWidget()
 
 void Calibration::openCalibrationWidget()
 {
-    QWidget *tmpOne = new QWidget;
+    QWidget *tmpOne = new QWidget();
     stLayout->addWidget(tmpOne);
     stLayout->setCurrentWidget(tmpOne);
     calibWidgetOpen = true;

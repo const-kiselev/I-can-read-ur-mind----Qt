@@ -19,15 +19,21 @@ public:
     void setUserInfo(QString userInfo);
     void addTestToQueue(int id, int position = -1);
     void setTestList(QList<ViewTestElement> tests);
+    void updateFields(QJsonObject input);
     QJsonObject getAllFields();
+    bool isInited(){return inited;}
+    void changeInited(){inited=!inited;}
+    int getNextTestID();
 signals:
 
 public slots:
 private:
+    bool inited;
     QList<TestData> listOfTests;
     QString userName,
             userInfo;
     int hashToStop;
+    int currentTest;
 };
 
 #endif // ADMIN_H

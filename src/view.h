@@ -26,7 +26,7 @@ private:
     MainWindow *_mainWindow;
 
     //-------- WIDGETs:
-    Menu *_menu;
+    Menu *_menu, *_testSessionMenu;
     Calibration *_eyeTrackerCalibrationWidget;
     TestView *_testView;
     GazePointTest *_gazePointTest;

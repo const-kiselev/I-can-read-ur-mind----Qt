@@ -14,6 +14,8 @@ public:
 
     void addEyeTrackerActions();
     void addItem(QString title, ResponseAnswer_ENUM respSignal, QString JsonResInStr = "");
+    void addWidget(QWidget* wdg);
+    void clear();
 signals:
     void sendSignal(const ResponseAnswer_ENUM cmd, const QString JSONdata = "");
 private:

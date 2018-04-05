@@ -98,11 +98,12 @@ QList<ViewTestElement> TestsController::getListOfTests()
 {
     QList<ViewTestElement> resList;
     ViewTestElement tmpViewTestElement;
+    qDebug() << "QList<ViewTestElement> TestsController::getListOfTests(): ";
     foreach(TestFileData testData, testsFilesList)
     {
-        qDebug() << "QList<ViewTestElement> TestsController::getListOfTests(): " << testData.name;
         tmpViewTestElement.ID = testData.ID;
-        tmpViewTestElement.name = testData.name;
+        // todo: необходимо будет переделать. Так как должно сохранятся именно название теста, а не имя файла!!!
+        tmpViewTestElement.name = testData.file->fileName();
         resList.append(tmpViewTestElement);
     }
 

@@ -162,7 +162,36 @@ void Model::handler(const ResponseAnswer_ENUM cmd, const QString&JSONdata)
     }
     case MODEL_ADMIN_MODULE_INIT:
     {
+
+        if(_admin)
+        _admin->setTestList(_testsController->getListOfTests());
+        break;
+    }
+    case MODEL_ADMIN_MODULE_GET_DATA:
+    {
+        if(!_admin->isInited())
+        {
+            emit handler(MODEL_ADMIN_MODULE_INIT);
+            _admin->changeInited();
+        }
         emit controllerHandler(MODEL_ADMIN_MODULE_DATA_d, JSONtoStr(_admin->getAllFields()));
+        break;
+    }
+    case MODEL_ADMIN_MODULE_UPDATE_DATA_d:
+    {
+        _admin->updateFields(JSON_fromStr(JSONdata));
+        break;
+    }
+    case MODEL_ADMIN_NEXT_TEST:
+    {
+        int res = _admin->getNextTestID();
+        if(res!=-1){
+            QJsonObject tmpJson;
+            tmpJson["ID"] = res;
+            handler(MODEL_START_TEST_d, JSONtoStr(tmpJson));
+        }
+        else
+            emit controllerHandler(MODEL_ADMIN_THERE_IS_NO_TEST);
         break;
     }
     default:
@@ -213,7 +242,6 @@ void Model::init()
     }
     if(ADMIN_MODULE){
         _admin = new Admin();
-        _admin->setTestList(_testsController->getListOfTests());
         emit controllerHandler(MODEL_ADMIN_MODULE_CREATED);
         // todo: необходимо отсылать сообщение о добавлении в меню
     }

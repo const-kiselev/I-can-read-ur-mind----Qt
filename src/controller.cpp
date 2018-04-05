@@ -101,12 +101,33 @@ void Controller::handler(const ResponseAnswer_ENUM cmd, const QString JSONdata)
     }
     case MENU_OPEN_ADMIN_MODULE:
     {
-        emit modelHandler(MODEL_ADMIN_MODULE_INIT);
+        emit modelHandler(MODEL_ADMIN_MODULE_GET_DATA);
         break;
     }
     case MODEL_ADMIN_MODULE_DATA_d:
     {
         emit viewHandler(VIEW_ADMIN_MODULE_DATA_d, JSONdata);
+        break;
+    }
+    case VIEW_ADMIN_MODULE_UPDAT_DATA_d:
+    {
+        emit modelHandler(MODEL_ADMIN_MODULE_UPDATE_DATA_d, JSONdata);
+        break;
+    }
+    case VIEW_ADMIN_MODULE_START_TEST_SESSION:
+    {
+        emit modelHandler(MODEL_ADMIN_START_TEST_SESSION);
+        emit viewHandler(VIEW_OPEN_TEST_SESSION_MENU);
+        break;
+    }
+    case VIEW_TEST_SESSION_MENU_READY_FOR_TEST:
+    {
+        emit modelHandler(MODEL_ADMIN_NEXT_TEST);
+        break;
+    }
+    case MODEL_ADMIN_THERE_IS_NO_TEST:
+    {
+        emit viewHandler(VIEW_TEST_SESSION_MENU_CLOSE);
         break;
     }
     case APP_EXIT:

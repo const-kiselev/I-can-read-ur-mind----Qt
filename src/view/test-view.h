@@ -12,18 +12,24 @@ class TestView : public QWidget
 public:
     TestView(QWidget *parent = nullptr);
     ResponseAnswer_ENUM load(QString);
+    int draw();
 signals:
     void sendSignal(const ResponseAnswer_ENUM cmd, const QString JSONdata = "");
 private:
     bool testLoaded;
     QFile *xmlFile; // new. Delete QString address;
+    QQueue<QWidget*> queueOfProblemsWidgets;
 
     void demoLoad();
-    void draw();
     bool _demo;
     TestRepresinatationData *_testView;
     void drawROI(ROI_VectorElement &inROI);
     void readXML();
+    void readProblemTag(QXmlStreamReader&xml);
+    bool first;
+    void clearLayout();
+
+    QStackedWidget *stWidget;
 };
 
 #endif // TESTVIEW_H
