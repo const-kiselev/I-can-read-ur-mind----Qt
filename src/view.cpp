@@ -276,6 +276,11 @@ void View::handler(const ResponseAnswer_ENUM cmd, const QString JSONdata)
         _testSessionMenu = nullptr;
         break;
     }
+    case VIEW_TEST_ANSWERS_d:
+    {
+        emit controllerHandler(VIEW_TEST_ANSWERS_d, JSONdata);
+        break;
+    }
     case APP_EXIT:
     {
         emit controllerHandler(APP_EXIT);

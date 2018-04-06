@@ -130,6 +130,11 @@ void Controller::handler(const ResponseAnswer_ENUM cmd, const QString JSONdata)
         emit viewHandler(VIEW_TEST_SESSION_MENU_CLOSE);
         break;
     }
+    case VIEW_TEST_ANSWERS_d:
+    {
+        emit modelHandler(MODEL_TESTS_CONTROLLER_SET_ANSWERS_d, JSONdata);
+        break;
+    }
     case APP_EXIT:
         emit appExit();
         break;

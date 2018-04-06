@@ -197,6 +197,11 @@ void Model::handler(const ResponseAnswer_ENUM cmd, const QString&JSONdata)
             emit controllerHandler(MODEL_ADMIN_THERE_IS_NO_TEST);
         break;
     }
+    case MODEL_TESTS_CONTROLLER_SET_ANSWERS_d:
+    {
+        *_textFileStream << JSONdata << "\n";
+        break;
+    }
     default:
         break;
     }
@@ -249,7 +254,6 @@ void Model::init()
         // todo: необходимо отсылать сообщение о добавлении в меню
     }
 }
-
 void Model::openFile(QString fileName)
 {
     if(_file)

@@ -29,6 +29,7 @@ private:
     void readProblemTag(QXmlStreamReader&xml);
     bool first;
     void clearLayout();
+    QJsonObject getAllInputFieldsInWidget(QWidget *wdg, bool answerWidget=false);
 
     QStackedWidget *stWidget;
 };

@@ -31,16 +31,23 @@ int TestView::draw()
     ///
     if(!first)
     {
+        QJsonObject jsonAnswer;
         clearLayout();
         qDebug() << ".count()"<< queueOfProblemsWidgets.count() << queueOfAnswersWidgets.count();
         if(queueOfProblemsWidgets.count() == queueOfAnswersWidgets.count())
         {
+            jsonAnswer = getAllInputFieldsInWidget(queueOfProblemsWidgets.front(), false);
             queueOfProblemsWidgets.pop_front();
             if(queueOfAnswersWidgets.front() ==nullptr)
                 queueOfAnswersWidgets.pop_front();
         }
-        else
+        else{
+            jsonAnswer = getAllInputFieldsInWidget(queueOfAnswersWidgets.front(), true);
             queueOfAnswersWidgets.pop_front();
+            //emit sendSignal(VIEW_TEST_ANSWERS_d, );
+        }
+        if(jsonAnswer.length())
+            emit sendSignal(VIEW_TEST_ANSWERS_d, JSONtoStr(jsonAnswer));
     }
     else
         first = false;
@@ -53,7 +60,6 @@ int TestView::draw()
     }
     else if(queueOfAnswersWidgets.front() !=nullptr)
     {
-        qDebug() << "Im here!!!!!";
         stWidget->addWidget(queueOfAnswersWidgets.front());
         stWidget->setCurrentWidget(queueOfAnswersWidgets.front());
     }
@@ -78,7 +84,6 @@ void TestView::drawArea(ROI_VectorElement &printROI, bool inEntryForm)
         QWidget *entryFormElement;
         if (printROI.inputType == "text")
         {
-            qDebug()<< "inputType=text";
             // todo: есть что еще сделать. Необходимо тщательно проработать вопрос с размерами
             // формы!!!!!!
             if (inEntryForm)
@@ -86,6 +91,9 @@ void TestView::drawArea(ROI_VectorElement &printROI, bool inEntryForm)
             else
                 entryFormElement = new QLineEdit(queueOfProblemsWidgets.back());
             entryFormElement->setProperty("inputID", printROI.inputID);
+            entryFormElement->setProperty("Problem index", queueOfProblemsWidgets.count() -1);
+            entryFormElement->setProperty("Answer widget", inEntryForm);
+            entryFormElement->setProperty("Type", "text");
             listOfAnswerFields.append(entryFormElement);
             f.setPixelSize(14);
             tmpLabel->setText(printROI.content.replace("\\n", "\n"));
@@ -151,6 +159,7 @@ void TestView::readProblemTag(QXmlStreamReader &xml)
     bool inEntryForm = false;
     QString elementInXML;
     queueOfProblemsWidgets.push_back(new QWidget());
+    queueOfProblemsWidgets.back()->setProperty("Problem index", queueOfProblemsWidgets.count()-1);
     queueOfAnswersWidgets.push_back(nullptr);
 
     xml.readNext();
@@ -242,7 +251,7 @@ void TestView::readProblemTag(QXmlStreamReader &xml)
             queueOfAnswersWidgets.pop_back();
             queueOfAnswersWidgets.push_back(new QWidget());
             inEntryForm = true;
-            qDebug() << "inEntryForm = true";
+            queueOfAnswersWidgets.back()->setProperty("Problem index", queueOfProblemsWidgets.count()-1);
         }
         else if(xml.name() == "EntryForm" && xml.isEndElement())
         {
@@ -253,7 +262,10 @@ void TestView::readProblemTag(QXmlStreamReader &xml)
                     [=](){emit sendSignal(VIEW_TEST_PRESSED_NEXT); });
             inEntryForm = false;
         }
-
+        else if(xml.name() == "Title" && xml.isStartElement()){
+            xml.readNext();
+            queueOfProblemsWidgets.back()->setProperty("Title", xml.text().toString());
+        }
         xml.readNext();
     }while(!xml.isEndElement() || xml.name()!="Problem");
 
@@ -278,6 +290,41 @@ void TestView::clearLayout()
         }
         delete queueOfProblemsWidgets.front()->layout();
     }
+}
+
+QJsonObject TestView::getAllInputFieldsInWidget(QWidget *wdg, bool answerWidget)
+{
+    QJsonObject jsonProblem, jsonInput;
+    int widgetIndex = wdg->property("Problem index").toInt();
+    foreach (QWidget* input, listOfAnswerFields) {
+        if(widgetIndex == input->property("Problem index").toInt() &&
+                input->property("Answer widget").toBool() == answerWidget)
+        {
+
+            if(input->property("Type") == "text")
+                jsonInput["data"] =  ((QLineEdit*)input)->text();
+            else if(input->property("Type") == "radio")
+            {
+
+            }
+            else if(input->property("Type") == "button")
+            {
+
+            }
+            else if(input->property("Type") == "checkbox")
+            {
+
+            }
+            jsonProblem[input->property("inputID").toString()] = JSONtoStr(jsonInput);
+        }
+    }
+    if(jsonProblem.length())
+    {
+        jsonProblem["Problem index"] = widgetIndex;
+        jsonProblem["Answer widget"] = answerWidget;
+    }
+    qDebug() << "widgetIndex= "<< widgetIndex;
+    return jsonProblem;
 }
 
 /*

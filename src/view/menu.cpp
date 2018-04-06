@@ -19,7 +19,7 @@ void Menu::init()
     menuList->setLayout(menuLayout);
    // layout()->setAlignment(menuLayout, Qt::AlignCenter);
     layout()->addWidget(menuList);
-    menuList->setMaximumHeight(300);
+    menuList->setMaximumHeight(400);
     //menuLayout->setMargin(5);
     //menuLayout->setSpacing(0);
     QLabel *img = new QLabel("<img src=\":/img/itmo_logo_full_blue\"/>");
