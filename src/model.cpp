@@ -1,5 +1,5 @@
 #include "model.h"
-Model::Model(QObject *parent) : QObject(parent)
+Model::Model(Controller *ctrl, QObject *parent) : QObject(parent), _ctrl(ctrl)
 {
     _eyeTracker = nullptr;
     _testsController = nullptr;
@@ -102,6 +102,7 @@ void Model::handler(const ResponseAnswer_ENUM cmd, const QString&JSONdata)
                 _testsController, SLOT(setGazePointForAnalysis(double,double)));
             /// запускаем трекинг в другом потоке
         _testsController->setStreamForActiveTest(_textFileStream);
+        _ctrl->startMouseTrackingViaViewSDK(_textFileStream);
         QtConcurrent::run(_eyeTracker, &EyeTracker::startTracking);
         break;
     }
@@ -111,6 +112,7 @@ void Model::handler(const ResponseAnswer_ENUM cmd, const QString&JSONdata)
         // TODO: необходимо реализовать выход из теста!
         disconnect(_eyeTracker, SIGNAL(sendGazePoint(double,double)),
                    _testsController, SLOT(setGazePointForAnalysis(double,double)));
+        _ctrl->stopMouseTrackingViaViewSDK();
         _testsController->finishTest();
         closeFile();
         break;

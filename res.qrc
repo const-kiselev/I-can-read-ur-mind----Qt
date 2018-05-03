@@ -2,5 +2,8 @@
     <qresource prefix="/img">
         <file alias="spinner">src/images/other/spinner-black.gif</file>
         <file alias="itmo_logo_full_blue">src/images/other/itmo_logo_white_rus.png</file>
+        <file alias="menu_logo1">src/images/background/top center.svg</file>
+        <file alias="menu_logo">src/images/background/top-center.png</file>
+        <file alias="menu_background">src/images/background/bottom-left-corner.png</file>
     </qresource>
 </RCC>

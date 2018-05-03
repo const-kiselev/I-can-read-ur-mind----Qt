@@ -12,21 +12,34 @@ Menu::~Menu()
 
 void Menu::init()
 {
-    QVBoxLayout *pvbxLayout = new QVBoxLayout;
-    QVBoxLayout *menuLayout = new QVBoxLayout;
+    QVBoxLayout *pvbxLayout = new QVBoxLayout();
+    QVBoxLayout *menuLayout = new QVBoxLayout();
+    QVBoxLayout *tmpLayout = new QVBoxLayout();
     setLayout(pvbxLayout);
-    menuList = new QWidget;
+    menuList = new QWidget();
+    QWidget *tmp = new QWidget();
     menuList->setLayout(menuLayout);
-   // layout()->setAlignment(menuLayout, Qt::AlignCenter);
-    layout()->addWidget(menuList);
+    //layout()->setAlignment(menuLayout, Qt::AlignCenter);
+    menuList->resize(this->size());
+    tmp->setLayout(tmpLayout);
+    layout()->addWidget(tmp);
+    tmp->layout()->addWidget(menuList);
     menuList->setMaximumHeight(400);
     //menuLayout->setMargin(5);
     //menuLayout->setSpacing(0);
-    QLabel *img = new QLabel("<img src=\":/img/itmo_logo_full_blue\"/>");
+    QLabel *img = new QLabel("<img width=\"200\" src=\":/img/menu_logo\"/>");
+    //QLabel *background = new QLabel("<img height=\"500\" width=\"500\" src=\":/img/menu_logo\"/>", menuList);
+    //menuList->setStyleSheet("background-image: \":/img/menu_background\" ");
+    //this->setStyleSheet(" background-color: white;");
+    tmp->setObjectName("tetta");
+    tmp->setStyleSheet("#tetta {background-image:url(\":/img/menu_background\"); "
+                        "background-position: left bottom; background-repeat:no-repeat; "
+                        "}");
     menuLayout->addWidget(img);
     img->setMinimumWidth(200);
-    menuLayout->setStretchFactor(img, 5);
-    menuList->layout()->setAlignment(img, Qt::AlignTop|Qt::AlignHCenter);
+    menuLayout->setStretchFactor(img, 2);
+
+    menuList->layout()->setAlignment(img, Qt::AlignCenter);
 }
 
 void Menu::addEyeTrackerActions()

@@ -1,11 +1,12 @@
 #include "view.h"
 
-View::View(QObject *parent) : QObject(parent)
+View::View(Controller *ctrl, QObject *parent) : QObject(parent), _ctrl(ctrl)
 {
     // ADD resize!!!!
     // FOR macOS:
     //QTimer::singleShot(1000, &window, SLOT(showFullScreen()));
-    _gazePointTest = nullptr;
+    _gazePointTest =
+            mouseTracking_stream =  nullptr;
 
 }
 
@@ -290,4 +291,41 @@ void View::handler(const ResponseAnswer_ENUM cmd, const QString JSONdata)
         break;
     }
 
+}
+
+void View::mousePressEvent(QMouseEvent *pe)
+{
+    if(mouseTracking_stream)
+        *mouseTracking_stream << "mP "
+                              << pe->timestamp()
+                              << " " << pe->x()
+                              << " " << pe->y()
+                              << "\n";
+}
+void View::mouseReleaseEvent(QMouseEvent *pe)
+{
+    if(mouseTracking_stream)
+        *mouseTracking_stream << "mR "
+                              << pe->timestamp()
+                              << " " << pe->x()
+                              << " " << pe->y()
+                              << "\n";
+}
+void View::mouseMoveEvent(QMouseEvent *pe)
+{
+    if(mouseTracking_stream)
+        *mouseTracking_stream << "mM "
+                              << pe->timestamp()
+                              << " " << pe->x()
+                              << " " << pe->y()
+                              << "\n";
+}
+
+int View::startMouseTracking(QTextStream *stream)
+{
+    mouseTracking_stream = stream;
+}
+void View::resetMouseTracking()
+{
+    mouseTracking_stream = nullptr;
 }

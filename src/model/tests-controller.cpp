@@ -89,8 +89,9 @@ void TestsController::setStreamForActiveTest(QTextStream *inStream)
     if(activeTestID == -1)
         return;
     foreach(TestFileData testData, testsFilesList){
-        if(testData.ID == activeTestID)
+        if(testData.ID == activeTestID){
             testData.testModel->setStream(inStream);
+        }
     }
 }
 

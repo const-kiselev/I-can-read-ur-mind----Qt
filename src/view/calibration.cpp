@@ -104,6 +104,6 @@ void Calibration::paintEvent(QPaintEvent *)
 {
     if (!calibWidgetOpen) return;
     circleStandartPainter->begin(this); // todo: change the logic of circleRect var!!!!
-    circleStandartPainter->drawPixmap(QRect(circleRect.x(), circleRect.y(), 50, 50),*circlePixmap, spriteFrame);
+    circleStandartPainter->drawPixmap(QRect(circleRect.x()-25, circleRect.y()-25, 50, 50),*circlePixmap, spriteFrame);
     circleStandartPainter->end();
 }

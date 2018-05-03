@@ -7,7 +7,7 @@ TestView::TestView(QWidget *parent) : QWidget(parent),
 }
 
 ResponseAnswer_ENUM TestView::load(QString inStr)
-{ //  в данном методе происходит загрузка теста из файла (в будущем)
+{
     stWidget = new QStackedWidget();
     QVBoxLayout *vbxLayout = new QVBoxLayout(this);
     setLayout(vbxLayout);
@@ -327,10 +327,4 @@ QJsonObject TestView::getAllInputFieldsInWidget(QWidget *wdg, bool answerWidget)
     return jsonProblem;
 }
 
-/*
- *
- * Evry test has own ID.
- * It needs only for choosing correct analysis algorithm.
- * Simple test XML starts with BCIs_TS [test simple] _ID_name.
- *
-*/
+

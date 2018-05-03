@@ -10,6 +10,7 @@ GazePointTest::GazePointTest(QWidget *parent) : QWidget(parent), circlePixmap(nu
 
 void GazePointTest::moveTo(double inX, double inY)
 {
+    if(inX < 0 || inY < 0) return;
     propertyAnimation = new QPropertyAnimation(this, "pos");
     propertyAnimation->setDuration(wayTime);
     propertyAnimation->setStartValue(QPointF(circleTarget.x(), circleTarget.y()));

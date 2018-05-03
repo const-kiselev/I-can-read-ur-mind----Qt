@@ -9,12 +9,16 @@
 #include "src/additional_header.h"
 
 struct GazePoint {
-    double xValue;
-    double yValue;
+    float xValue;
+    float yValue;
     bool fixaction;
-    unsigned timestamp;
+    int64_t 	device_time_stamp,
+                system_time_stamp;
+
     GazePoint() : fixaction(false){}
-    GazePoint(double inX, double inY) : fixaction(false), xValue(inX), yValue(inY){}
+    GazePoint(float inX, float inY) : fixaction(false), xValue(inX), yValue(inY){}
+    GazePoint(float inX, float inY, int64_t  deviceTS, int64_t systemTS) : fixaction(false),
+        xValue(inX), yValue(inY), device_time_stamp(deviceTS), system_time_stamp(systemTS){}
     QPointF posF(){
         return QPointF(xValue, yValue);
     }
@@ -26,44 +30,35 @@ Q_OBJECT
 public:
     EyeTracker();
     ~EyeTracker();
-    //function<int(string)> getHandler();
-    int init();
-    int calibrate();
-    int startTracking();
+    int init(); //todo: полностью переделать, параметром будет указатель на стрим для передачи данных о калибровке
+    int calibrate(); // todo: полностью переделать, параметром будет указатель на стрим для передачи данных о калибровке
+    int startTracking(); // todo: параметром будет указатель на стрим для передачи данных о калибровке
     int stopTracking();
-    void setTextStream(QTextStream *inStream);
+    void setTextStream(QTextStream *inStream); // удалить?
 signals:
     void sendSignal(const ResponseAnswer_ENUM cmd, const QString JSONdata = "");
     void sendGazePoint(double inX, double inY); // отправка уведомления об изменении gaze point
 public slots:
 private:
 
-    GazePoint getAvrCurrentData();
     void getCurrentData();
     void printCurrentData();
     void calculate();
+    GazePoint getAvrCurrentData();
 
     TobiiResearchEyeTracker* eye_tracker;
     TobiiResearchStatus status;
     TobiiResearchGazeData lastGazeData;
 
-    GazePoint prevGazePoint, currentGazePoint;
+    GazePoint   prevGazePoint,
+                currentGazePoint;
     double THRESHOLD;
-    bool calibrate_done;
-    bool calibrate_need;
-    bool tracking_active;
+    bool    calibrate_done, // todo: сделать проверку по всем используемым методам
+            calibrate_need, // todo: сделать проверку по всем используемым методам
+            tracking_active;// todo: сделать проверку по всем используемым методам
+
     QTextStream *outputStream;
-
-    // DATA methods:
-
-
-
-
+    QFile *file;
 };
 
 #endif // EYETRACKE_H
-
-
-
-/// Принцип работы класса:
-///

@@ -26,10 +26,7 @@ int EyeTracker::init()
 #ifdef NO_EYE_TRACKER_TEST
     return 0;
 #endif
-    // Задачи для реализации:
-    // Необходимо дописать и сделать:
-    //	- после поиска всех устройств предлагать пользователю выбрать, какое использовать
-    //  - после найденных устройст
+    // TODO: Необходимо дописать и сделать: 1) после поиска всех устройств предлагать пользователю выбрать, какое использовать 2) после найденных устройст
     TobiiResearchEyeTrackers *findedTrackers;
     TobiiResearchStatus response = tobii_research_find_all_eyetrackers(&findedTrackers);
     qDebug() << (int)response << "\n";
@@ -37,8 +34,6 @@ int EyeTracker::init()
         qDebug() << "\n" << "Error in tobii_research_find_all_eyetrackers: " << response << "\n";
         return 1;
     }
-    //tobii_research_get_serial_number((findedTrackers->eyetrackers[0]), &serial_number);
-    //cout << serial_number << endl;
     eye_tracker = findedTrackers->eyetrackers[0];
     return 0;
 }
@@ -80,15 +75,20 @@ int EyeTracker::calibrate()
         emit sendSignal(EYE_TRACKER_FAILED_CALIBRATION); // means "can't start calibration mode"
         return 0;
     }
-    /* Define the points on screen we should calibrate at. */
     /* The coordinates are normalized, i.e. (0.0, 0.0) is the upper left corner and (1.0, 1.0) is the lower right corner. */
     {
         #define NUM_OF_POINTS  9U
-        TobiiResearchNormalizedPoint2D points_to_calibrate[NUM_OF_POINTS] = \
-        { {0.5f, 0.5f}, { 0.6f, 0.6f }, { 0.6f, 0.4f }, { 0.4f, 0.6f }, { 0.4f, 0.4f }, { 0.05f, 0.05f }, { 0.05f, 0.95f }, { 0.95f, 0.05f }, { 0.95f, 0.95f }};
+        srand(time(NULL));
+        QList<TobiiResearchNormalizedPoint2D> listOfPoints;
+        listOfPoints.append({0.5f, 0.5f}); listOfPoints.append( { 0.6f, 0.6f });
+        listOfPoints.append( { 0.6f, 0.4f }); listOfPoints.append( { 0.4f, 0.6f });
+        listOfPoints.append( { 0.4f, 0.4f }); listOfPoints.append( { 0.05f, 0.05f });
+        listOfPoints.append( { 0.05f, 0.95f }); listOfPoints.append( { 0.95f, 0.05f });
+        listOfPoints.append( { 0.95f, 0.95f });
         size_t i = 0;
         for (; i < NUM_OF_POINTS; i++) {
-            TobiiResearchNormalizedPoint2D* point = &points_to_calibrate[i];
+            int r = rand()%listOfPoints.length();
+            TobiiResearchNormalizedPoint2D* point = &listOfPoints[r];
             jsonPoint["x"]=point->x;
             jsonPoint["y"]=point->y;
             emit sendSignal(EYE_TRACKER_POINT_TO_CALIBRATE, QJsonDocument(jsonPoint).toJson(QJsonDocument::Compact));
@@ -100,6 +100,7 @@ int EyeTracker::calibrate()
                 /* Not all eye tracker models will fail at this point, but instead fail on ComputeAndApply. */
                 tobii_research_screen_based_calibration_collect_data(eye_tracker, point->x, point->y);
             }
+            listOfPoints.removeAt(r);
         }
         qDebug()<<("Computing and applying calibration.\n");
         emit sendSignal(EYE_TRACKER_COMPUTING_AND_APPLYING_CALIBRATION);
@@ -113,31 +114,11 @@ int EyeTracker::calibrate()
         else {
             qDebug() << "Calibration failed!\n";
         }
-        /* Free calibration result when done using it */
         tobii_research_free_screen_based_calibration_result(calibration_result);
-        /* Analyze the data and maybe remove points that weren't good. */
-//        TobiiResearchNormalizedPoint2D* recalibrate_point = &points_to_calibrate[1];
-//        qDebug() << "Removing calibration point at ("<<recalibrate_point->x<<","<<recalibrate_point->y<<").\n";
-//        status = tobii_research_screen_based_calibration_discard_data(eye_tracker, recalibrate_point->x, recalibrate_point->y);
-//        /* Redo collection at the discarded point */
-
-//        tobii_research_screen_based_calibration_collect_data(eye_tracker, recalibrate_point->x, recalibrate_point->y);
-//        /* Compute and apply again. */
-//        qDebug() << ("Computing and applying calibration.\n");
-//        status = tobii_research_screen_based_calibration_compute_and_apply(eye_tracker, &calibration_result);
-//        if (status == TOBII_RESEARCH_STATUS_OK && calibration_result->status == TOBII_RESEARCH_CALIBRATION_SUCCESS) {
-//            cout << ("Compute and apply returned %i and collected at %zu points.\n", status, calibration_result->calibration_point_count);
-//        }
-//        else {
-//            cout << ("Calibration failed!\n");
-//        }
-        /* Free calibration result when done using it */
-        //tobii_research_free_screen_based_calibration_result(calibration_result);
-        /* See that you're happy with the result. */
     }
-    /* The calibration is done. Leave calibration mode. */
+
     status = tobii_research_screen_based_calibration_leave_calibration_mode(eye_tracker);
-    //if(status);
+
     calibrate_need = false;
     qDebug() << QString("Left calibration mode.\n");
     emit sendSignal(EYE_TRACKER_LEAVE_CALIBRATION_MODE);
@@ -166,16 +147,17 @@ int EyeTracker::startTracking()
     }
 #endif
 
+
+//    if(file)
+//        file->close(), file=nullptr;
+//    file
     status = tobii_research_subscribe_to_gaze_data(eye_tracker,gazeDataCallback, &lastGazeData);
     if (status != TOBII_RESEARCH_STATUS_OK)
         return EYE_TRACKER_PROBLEM_WITH_TRACKING_START;
     QPointF tmpPoint;
     while(tracking_active){
-        //boost::this_thread::sleep_for(boost::chrono::milliseconds(360));
         currentGazePoint = getAvrCurrentData();
         calculate();
-        //emit sendGazePoint(tmpPoint.x(), tmpPoint.y());
-        Sleep(uint(200));
     }
     return 0;
 }
@@ -208,36 +190,38 @@ GazePoint EyeTracker::getAvrCurrentData()
     return GazePoint( (lastGazeData.left_eye.gaze_point.position_on_display_area.x +
                    lastGazeData.right_eye.gaze_point.position_on_display_area.x) / 2,
                     (lastGazeData.left_eye.gaze_point.position_on_display_area.y +
-                    lastGazeData.right_eye.gaze_point.position_on_display_area.y) / 2);
+                    lastGazeData.right_eye.gaze_point.position_on_display_area.y) / 2,
+                      lastGazeData.device_time_stamp, lastGazeData.system_time_stamp);
 }
 
 void EyeTracker::printCurrentData()
 {
-    /// отображение даннх. Если выходной поток был не зада, но данные отображаются в дебаггере
+    /// отображение данных. Если выходной поток был не задан, но данные отображаются в дебаггере
     /// было бы неплохо, если бы просто происходила запись в файл, если не задан выходной поток
     if(!outputStream){
         qDebug() << currentGazePoint.xValue <<
-                    currentGazePoint.yValue <<
-                    currentGazePoint.fixaction;
+                    currentGazePoint.yValue;
 
     }
     else
-        *outputStream << currentGazePoint.xValue << " " <<
-                        currentGazePoint.yValue << " " <<
-                        currentGazePoint.fixaction<< "\n";
+        *outputStream << currentGazePoint.system_time_stamp << " " <<currentGazePoint.xValue << " " <<
+                        currentGazePoint.yValue << "\n";
     emit sendGazePoint(currentGazePoint.xValue, currentGazePoint.yValue);
 }
 
 void EyeTracker::calculate()
 {
+    if(isnan(currentGazePoint.posF().x()) || isnan(currentGazePoint.posF().y())  ||
+            currentGazePoint.posF().x() < 0 || currentGazePoint.posF().y() < 0)
+        return;
     QPointF tmp = currentGazePoint.posF()-prevGazePoint.posF();
     double x = sqrt(tmp.x()*tmp.x()+tmp.y()*tmp.y());
+    if(x==0) return;
 qDebug() << "lenght = " << x;
     if( x > THRESHOLD)
         currentGazePoint.fixaction = false;
     else
         currentGazePoint.fixaction = true;
-
     printCurrentData();
     prevGazePoint = currentGazePoint;
 }

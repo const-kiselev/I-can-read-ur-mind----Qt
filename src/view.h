@@ -11,18 +11,25 @@
 #include "src/view/gaze-point-test.h"
 #include "src/view/admin-view.h"
 
+#include "src/controller.h"
+
+
+
 class View : public QObject
 {
     Q_OBJECT
 public:
-    explicit View(QObject *parent = nullptr);
+    View(Controller *ctrl, QObject *parent = nullptr);
     void init();
     void mainWindowInit();
 signals:
     void controllerHandler(const ResponseAnswer_ENUM cmd, const QString JSONdata = "");
 public slots:
     void handler(const ResponseAnswer_ENUM cmd, const QString JSONdata = "");
+    int setMouseTracking(QTextStream *stream); // трекинг позиции мышки в поток (файл)
+    void resetMouseTracking();
 private:
+    Controller *_ctrl;
     MainWindow *_mainWindow;
 
     //-------- WIDGETs:
@@ -31,6 +38,14 @@ private:
     TestView *_testView;
     GazePointTest *_gazePointTest;
     AdminView *_adminView;
+
+private:
+    QTextStream *mouseTracking_stream;
+
+protected:
+    virtual void mousePressEvent  (QMouseEvent* pe);
+    virtual void mouseReleaseEvent(QMouseEvent* pe);
+    virtual void mouseMoveEvent   (QMouseEvent* pe);
 };
 
 #endif // VIEW_H
