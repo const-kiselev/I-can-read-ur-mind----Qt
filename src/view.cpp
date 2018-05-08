@@ -1,12 +1,12 @@
 #include "view.h"
 
-View::View(Controller *ctrl, QObject *parent) : QObject(parent), _ctrl(ctrl)
+View::View(QObject *parent) : QObject(parent)
 {
     // ADD resize!!!!
     // FOR macOS:
     //QTimer::singleShot(1000, &window, SLOT(showFullScreen()));
-    _gazePointTest =
-            mouseTracking_stream =  nullptr;
+    _gazePointTest =nullptr;
+    mouseTracking_stream =  nullptr;
 
 }
 
@@ -324,6 +324,7 @@ void View::mouseMoveEvent(QMouseEvent *pe)
 int View::startMouseTracking(QTextStream *stream)
 {
     mouseTracking_stream = stream;
+    return 0;
 }
 void View::resetMouseTracking()
 {

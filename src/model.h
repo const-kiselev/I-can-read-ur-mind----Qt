@@ -12,13 +12,12 @@
 #include "src/model/tests-controller.h"
 #include "src/model/admin.h"
 
-#include "src/controller.h"
 
 class Model : public QObject
 {
     Q_OBJECT
 public:
-    Model(Controller *ctrl, QObject *parent = nullptr);
+    Model(QObject *parent = nullptr);
     ~Model();
 signals:
     void viewHandler(const ResponseAnswer_ENUM cmd, const QString&JSONdata = "");
@@ -30,7 +29,6 @@ public slots:
     // модернизация:
 
 private:
-    Controller *_ctrl;
 
     EyeTracker *_eyeTracker;
     TestsController *_testsController;

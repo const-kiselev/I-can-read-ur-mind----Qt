@@ -19,17 +19,16 @@ class View : public QObject
 {
     Q_OBJECT
 public:
-    View(Controller *ctrl, QObject *parent = nullptr);
+    View(QObject *parent = nullptr);
     void init();
     void mainWindowInit();
 signals:
     void controllerHandler(const ResponseAnswer_ENUM cmd, const QString JSONdata = "");
 public slots:
     void handler(const ResponseAnswer_ENUM cmd, const QString JSONdata = "");
-    int setMouseTracking(QTextStream *stream); // трекинг позиции мышки в поток (файл)
+    int startMouseTracking(QTextStream *stream); // трекинг позиции мышки в поток (файл)
     void resetMouseTracking();
 private:
-    Controller *_ctrl;
     MainWindow *_mainWindow;
 
     //-------- WIDGETs:

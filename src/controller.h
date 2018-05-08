@@ -7,15 +7,12 @@
 #include <QFile>
 
 #include "src/additional_header.h"
-#include "src/model.h"
-#include "src/view.h"
 
 class Controller : public QObject
 {
     Q_OBJECT
 public:
     Controller(QObject *parent = nullptr);
-    void setViewAndModel(View *view, Model *model){_model = model; _view = view;}
 
 signals:
     void modelHandler(const ResponseAnswer_ENUM cmd, const QString JSONdata = "");
@@ -27,8 +24,6 @@ public slots:
     void startMouseTrackingViaViewSDK(QTextStream *stream);
     void stopMouseTrackingViaViewSDK();
 private:
-    Model *_model;
-    View *_view;
 
     QList<QFile> listOfFiles;
     QStringList listFiles;

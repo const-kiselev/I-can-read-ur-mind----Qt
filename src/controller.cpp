@@ -3,22 +3,6 @@
 Controller::Controller(QObject *parent)
     : QObject(parent)
 {
-    _view = new View(this);
-    _model = new Model(this);
-
-    QObject::connect(_model, SIGNAL(viewHandler(const ResponseAnswer_ENUM, const QString)),
-                                   _view, SLOT(handler(const ResponseAnswer_ENUM, const QString)));
-    QObject::connect(_model, SIGNAL(controllerHandler(const ResponseAnswer_ENUM, const QString)),
-                                   this, SLOT(handler(const ResponseAnswer_ENUM, const QString)));
-    QObject::connect(_view, SIGNAL(controllerHandler(const ResponseAnswer_ENUM, const QString)),
-                                   this, SLOT(handler(const ResponseAnswer_ENUM, const QString)));
-    QObject::connect(this, SIGNAL(modelHandler(const ResponseAnswer_ENUM, const QString)),
-                                   _model, SLOT(handler(const ResponseAnswer_ENUM, const QString)));
-    QObject::connect(this, SIGNAL(viewHandler(const ResponseAnswer_ENUM, const QString)),
-                                   _view, SLOT(handler(const ResponseAnswer_ENUM, const QString)));
-    QObject::connect(this, SIGNAL(appExit()), &a, SLOT(quit()));
-
-    _view->init();
 }
 
 void Controller::handler(const ResponseAnswer_ENUM cmd, const QString JSONdata)
@@ -182,9 +166,7 @@ int Controller::findAllTests()
 
 void Controller::startMouseTrackingViaViewSDK(QTextStream *stream)
 {
-    _view->setMouseTracking(stream);
 }
 void Controller::stopMouseTrackingViaViewSDK()
 {
-    _view->resetMouseTracking();
 }
