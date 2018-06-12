@@ -4,7 +4,7 @@
 #include <QWidget>
 #include <QtWidgets>
 #include <QPainter>
-#include "src/additional_header.h"
+#include "../additional_header.h"
 
 class TestView : public QWidget
 {

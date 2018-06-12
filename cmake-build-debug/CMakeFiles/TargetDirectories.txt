@@ -1,0 +1,3 @@
+/Users/const/Documents/Develop/I-can-read-ur-mind----Qt/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/const/Documents/Develop/I-can-read-ur-mind----Qt/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/const/Documents/Develop/I-can-read-ur-mind----Qt/cmake-build-debug/CMakeFiles/I_can_read_ur_mind.dir

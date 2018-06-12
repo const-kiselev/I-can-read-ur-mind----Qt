@@ -7,7 +7,6 @@ Admin::Admin(QObject *parent) : QObject(parent)
     inited = false;
     currentTest = -1;
 }
-
 void Admin::setTestList(QList<ViewTestElement> tests)
 {
     TestData tmp;
@@ -16,7 +15,6 @@ void Admin::setTestList(QList<ViewTestElement> tests)
         listOfTests.append(tmp);
     }
 }
-
 void Admin::updateFields(QJsonObject input)
 {
     this->userName = input["userName"].toString();
@@ -34,7 +32,6 @@ QJsonObject Admin::getAllFields()
     jsonObj["allTests"] = JSONtoStr(getListOfTests());
     return jsonObj;
 }
-
 int Admin::getNextTestID()
 {
     int i;

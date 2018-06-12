@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include <QFrame>
 #include <QStackedWidget>
-#include "src/additional_header.h"
+#include "../additional_header.h"
 
 
 

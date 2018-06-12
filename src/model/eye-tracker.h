@@ -2,11 +2,11 @@
 #define EYETRACKE_H
 
 #include <QApplication>
-#include <tobii_research.h>
-#include <tobii_research_calibration.h>
-#include <tobii_research_eyetracker.h>
-#include <tobii_research_streams.h>
-#include "src/additional_header.h"
+#include "../../3rdparty/tobii_research/include/tobii_research.h"
+#include "../../3rdparty/tobii_research/include/tobii_research_calibration.h"
+#include "../../3rdparty/tobii_research/include/tobii_research_eyetracker.h"
+#include "../../3rdparty/tobii_research/include/tobii_research_streams.h"
+#include "../additional_header.h"
 
 struct GazePoint {
     float xValue;

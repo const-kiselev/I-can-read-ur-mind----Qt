@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QWidget>
 #include <QtWidgets>
-#include "src/additional_header.h"
+#include "../additional_header.h"
 
 class AdminView : public QWidget
 {

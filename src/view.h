@@ -2,16 +2,16 @@
 #define VIEW_H
 
 #include <QObject>
-#include "src/additional_header.h"
+#include "additional_header.h"
 
-#include "src/view/main-window.h"
-#include "src/view/menu.h"
-#include "src/view/calibration.h"
-#include "src/view/test-view.h"
-#include "src/view/gaze-point-test.h"
-#include "src/view/admin-view.h"
+#include "view/main-window.h"
+#include "view/menu.h"
+#include "view/calibration.h"
+#include "view/test-view.h"
+#include "view/gaze-point-test.h"
+#include "view/admin-view.h"
 
-#include "src/controller.h"
+#include "controller.h"
 
 
 

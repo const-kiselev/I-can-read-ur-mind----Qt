@@ -7,10 +7,10 @@
 #include <QtConcurrent/QtConcurrent>
 #include <QDateTime>
 
-#include "src/additional_header.h"
-#include "src/model/eye-tracker.h"
-#include "src/model/tests-controller.h"
-#include "src/model/admin.h"
+#include "additional_header.h"
+#include "model/eye-tracker.h"
+#include "model/tests-controller.h"
+#include "model/admin.h"
 
 
 class Model : public QObject

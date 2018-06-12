@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include <QPainter>
-#include "src/additional_header.h"
+#include "../additional_header.h"
 
 class GazePointTest : public QWidget
 {

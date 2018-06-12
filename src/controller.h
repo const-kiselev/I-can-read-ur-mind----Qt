@@ -6,7 +6,7 @@
 #include <QObject>
 #include <QFile>
 
-#include "src/additional_header.h"
+#include "additional_header.h"
 
 class Controller : public QObject
 {

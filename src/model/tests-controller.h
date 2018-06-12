@@ -2,7 +2,7 @@
 #define TESTSCONTROLLER_H
 
 #include <QObject>
-#include "src/additional_header.h"
+#include "../additional_header.h"
 
 
 

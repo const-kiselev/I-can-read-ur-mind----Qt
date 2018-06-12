@@ -2,7 +2,7 @@
 #define Menu_H
 
 #include <QWidget>
-#include "src/additional_header.h"
+#include "../additional_header.h"
 
 class Menu : public QWidget
 {

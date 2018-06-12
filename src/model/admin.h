@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QString>
 #include <QQueue>
-#include <src/additional_header.h>
+#include "../additional_header.h"
 
 class Admin : public QObject
 {
@@ -13,11 +13,11 @@ public:
     explicit Admin(QObject *parent = nullptr);
     QString getName() {return userName;}
     QJsonObject getListOfTests();
-    bool checkHash(int password);
-    void setHash(int hash);
-    void setUserName(QString name);
-    void setUserInfo(QString userInfo);
-    void addTestToQueue(int id, int position = -1);
+    bool checkHash(int password){return true;};
+    void setHash(int hash){};
+    void setUserName(QString name){};
+    void setUserInfo(QString userInfo){};
+    void addTestToQueue(int id, int position = -1){};
     void setTestList(QList<ViewTestElement> tests);
     void updateFields(QJsonObject input);
     QJsonObject getAllFields();

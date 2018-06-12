@@ -72,7 +72,7 @@ ResponseAnswer_ENUM TestsController::finishTest()
 QString TestsController::getTestXMLfileLink()
 {
     if(loadedPageID==-1)
-        return MODEL_TESTS_CONTROLLER_NO_LOADED_TEST;
+        return "";
     foreach(TestFileData testData, testsFilesList){
         if(testData.ID == loadedPageID)
             return testData.file->fileName();

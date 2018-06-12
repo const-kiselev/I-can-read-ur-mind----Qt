@@ -1,4 +1,4 @@
-#include "src/view/test-view.h"
+#include "test-view.h"
 
 TestView::TestView(QWidget *parent) : QWidget(parent),
     testLoaded(false), first(true)
