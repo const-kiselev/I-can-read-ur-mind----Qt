@@ -25,14 +25,14 @@ public:
     ResponseAnswer_ENUM unload();
     void setStream(QTextStream *inStream) {outPutStream = inStream;}
 signals:
-    void loadedSignal();
+    void loadedSignal(){};
 public slots:
     /// Будем получать данные уже в конвертированном виде,
     /// так как это не копетенция самой модели теста
     void setPointToROIsAnalysis(QPoint inPoint);
 private:
     // указатель на xml-file
-    ResponseAnswer_ENUM loadTest(){} // реализовать
+    ResponseAnswer_ENUM loadTest(){return OK_ANSWER;} // реализовать
     // Загружает ROI-области для анализа демо теста
     //void demoLoadROIs();
     void readXML();

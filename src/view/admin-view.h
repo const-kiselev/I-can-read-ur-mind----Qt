@@ -23,6 +23,7 @@ private:
     //QListModel<TestData> *listOfTestsModel;
 
     QWidget *centerWidget;
+
 };
 
 #endif // ADMINVIEW_H

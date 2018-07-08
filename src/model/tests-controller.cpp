@@ -77,6 +77,7 @@ QString TestsController::getTestXMLfileLink()
         if(testData.ID == loadedPageID)
             return testData.file->fileName();
     }
+    return "";
 }
 
 int TestsController::getActiveTestID()

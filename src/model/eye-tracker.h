@@ -41,7 +41,7 @@ signals:
 public slots:
 private:
 
-    void getCurrentData();
+    void getCurrentData(){};
     void printCurrentData();
     void calculate();
     GazePoint getAvrCurrentData();
